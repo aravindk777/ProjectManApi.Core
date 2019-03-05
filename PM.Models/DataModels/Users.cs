@@ -1,11 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PM.Models.DataModels
 {
-    [Table("Users")]
-    public class Users
+    [Table("User")]
+    public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,5 +17,14 @@ namespace PM.Models.DataModels
         public string LastName { get; set; }
         [Required]
         public string UserId { get; set; }
+        [DefaultValue("getdate()")]
+        public DateTime Created
+        {
+            get { return _createdValue == DateTime.MinValue ? DateTime.Now : _createdValue; }
+            set { _createdValue = value; }
+        }
+        private DateTime _createdValue;
+
+        public DateTime? EndDate { get; set; }
     }
 }

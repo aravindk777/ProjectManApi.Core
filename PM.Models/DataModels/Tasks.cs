@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PM.Models.DataModels
 {
-    [Table("Tasks")]
-    public class Tasks
+    [Table("Task")]
+    public class Task
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,17 +18,17 @@ namespace PM.Models.DataModels
         [Range(1, 30, ErrorMessage = "Invalid Priority value")]
         public int Priority { get; set; }
 
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime StartDate { get; set; } = DateTime.Today;
+        public DateTime? EndDate { get; set; }
 
-        public int? ProjectId { get; set; }
-        public virtual Projects Project { get; set; }
+        public int ProjectId { get; set; }
+        public virtual Project Project { get; set; }
 
         public bool IsParent { get; set; }
-        public virtual Tasks ParentTask { get; set; }
+        public virtual Task ParentTask { get; set; }
         public int? ParentTaskId { get; set; }
 
         public Guid? TaskOwnerId { get; set; }
-        public virtual Users TaskOwner { get; set; }
+        public virtual User TaskOwner { get; set; }
     }
 }

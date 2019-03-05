@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PM.Data.Repository
 {
-    public interface IUserRepository :  IRepository<Users>
+    public interface IUserRepository :  IRepository<User>
     {
         
     }

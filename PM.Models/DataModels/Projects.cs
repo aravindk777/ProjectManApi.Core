@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PM.Models.DataModels
 {
-    [Table("Projects")]
-    public class Projects
+    [Table("Project")]
+    public class Project
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,6 +21,6 @@ namespace PM.Models.DataModels
         public DateTime? EndDate { get; set; }
 
         public Guid? ManagerId { get; set; }
-        public virtual Users Manager { get; set; }
+        public virtual User Manager { get; set; }
     }
 }

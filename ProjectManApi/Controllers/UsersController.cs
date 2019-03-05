@@ -14,27 +14,27 @@ namespace PM.Api.Controllers
     {
         // GET: api/Users
         [HttpGet]
-        public IEnumerable<Users> Get()
+        public IEnumerable<User> Get()
         {
-            return new List<Users>();
+            return new List<User>();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}", Name = "Get")]
-        public Users Get(string id)
+        public User Get(string id)
         {
-            return new Users();
+            return new User();
         }
 
         // POST: api/Users
         [HttpPost]
-        public void Post([FromBody] Users value)
+        public void Post([FromBody] User value)
         {
         }
 
         // PUT: api/Users/5
         [HttpPut("{UserId}")]
-        public void Put(string id, [FromBody] Users value)
+        public void Put(string id, [FromBody] User value)
         {
         }
 

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PM.Data.Repository
 {
-    public class ProjectsRepository : GenericRepository<Projects>, IProjectsRepository
+    public class ProjectsRepository : GenericRepository<Project>, IProjectsRepository
     {
         public ProjectsRepository(PMDbContext context) : base(context)
         { }

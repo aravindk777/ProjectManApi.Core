@@ -18,28 +18,28 @@ namespace PM.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<Projects> Get()
+        public IEnumerable<Project> Get()
         {
-            return new Projects[] { };
+            return new Project[] { };
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}", Name = "GetProject")]
-        public Projects Get(int id)
+        public Project Get(int id)
         {
-            return new Projects();
+            return new Project();
         }
 
         // POST: api/Projects
         [HttpPost]
-        public IActionResult Post([FromBody] Projects value)
+        public IActionResult Post([FromBody] Project value)
         {
             return Created("", null);
         }
 
         // PUT: api/Projects/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Projects value)
+        public IActionResult Put(int id, [FromBody] Project value)
         {
             return Ok();
         }
