@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PM.Api</name>
+    </assembly>
+    <members>
+        <member name="T:PM.Api.Controllers.HealthController">
+            <summary>
+            Health check
+            </summary>
+        </member>
+        <member name="T:PM.Api.Controllers.ProjectsController">
+            <summary>
+            Projects Controller
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Get">
+            <summary>
+            Get all Projects list
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:PM.Api.Controllers.TasksController">
+            <summary>
+            Tasks Controller
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.Get">
+            <summary>
+            Get all Tasks
+            </summary>
+            <returns>List of all Tasks</returns>
+        </member>
+        <member name="T:PM.Api.Controllers.UsersController">
+            <summary>
+            Users Controller
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetAllUsers">
+            <summary>
+            GET: api/Users | Get All Users
+            </summary>
+            <returns>List of all users</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetActiveUsers">
+            <summary>
+            Get all Active Users
+            </summary>
+            <returns>List of Active Users</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.Search(System.String,System.Boolean,System.String)">
+            <summary>
+            Search for users with any keyword that may match their Firstname, Last name or User ID
+            </summary>
+            <param name="keyword"></param>
+            <param name="matchExact"></param>
+            <param name="fieldType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:PM.Api.Extensions.HelperExtns">
+            <summary>
+            Helper method to create JSON string from the object
+            </summary>
+        </member>
+        <member name="M:PM.Api.Extensions.HelperExtns.Stringify(System.Object)">
+            <summary>
+            Stringify method
+            </summary>
+            <param name="input">any object</param>
+            <returns>string</returns>
+        </member>
+        <member name="T:PM.Api.Program">
+            <summary>
+            Main Program console for the Web Api
+            </summary>
+        </member>
+        <member name="T:PM.Api.Startup">
+            <summary>
+            Startup object class
+            </summary>
+        </member>
+        <member name="M:PM.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Constructor with DI
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="P:PM.Api.Startup.Configuration">
+            <summary>
+            Configuration object
+            </summary>
+        </member>
+        <member name="M:PM.Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">Servicecollection object</param>
+        </member>
+        <member name="M:PM.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app">app builder</param>
+            <param name="env">environment configuration</param>
+            <param name="loggerFactory">logging</param>
+        </member>
+    </members>
+</doc>

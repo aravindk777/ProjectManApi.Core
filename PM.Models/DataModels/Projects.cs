@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PM.Models.DataModels
 {
-    [Table("Project")]
+    [Table("Projects")]
     public class Project
     {
         [Key]

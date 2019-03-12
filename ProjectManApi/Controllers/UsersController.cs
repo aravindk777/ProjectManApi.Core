@@ -1,47 +1,179 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using PM.Api.Extensions;
+using PM.BL.Users;
 using PM.Models.ViewModels;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PM.Api.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Users Controller
+    /// </summary>
+    [EnableCors]
     [ApiController]
-    public class UsersController : ControllerBase
+    [Route("api/[controller]")]
+    public class UsersController : Controller
     {
-        // GET: api/Users
-        [HttpGet]
-        public IEnumerable<User> Get()
+        private IUserLogic _userOrchestrator;
+        private readonly ILogger<UsersController> _logger;
+
+        public UsersController(IUserLogic _userlogicInstance, ILogger<UsersController> logInstance)
         {
-            return new List<User>();
+            _userOrchestrator = _userlogicInstance;
+            _logger = logInstance;
+        }
+
+        /// <summary>
+        /// GET: api/Users | Get All Users
+        /// </summary>
+        /// <returns>List of all users</returns>
+        [HttpGet]
+        //[ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
+        public IActionResult GetAllUsers()
+        {
+            try
+            {
+                var result = _userOrchestrator.GetUsers();
+                _logger.LogDebug("GetAllUsers invoked with count - " + result.Count());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during GetAllUsers", ex.InnerException, ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all Active Users
+        /// </summary>
+        /// <returns>List of Active Users</returns>
+        [HttpGet("active")]
+        //[ActionName("GetAllUsers")]
+        public IActionResult GetActiveUsers()
+        {
+            try
+            {
+                return Ok(_userOrchestrator.GetUsers(true));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during GetAllUsers");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         // GET: api/Users/5
-        [HttpGet("{id}", Name = "Get")]
-        public User Get(string id)
+        [HttpGet("{id}")]
+        //[Route("api/users/{UserId:alpha}")]
+        //[ActionName("GetById")]
+        public IActionResult Get(string id)
         {
-            return new User();
+            try
+            {
+                return Ok(_userOrchestrator.GetUserById(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error when trying to GET User by {id}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         // POST: api/Users
         [HttpPost]
-        public void Post([FromBody] User value)
+        public IActionResult Post([FromBody] User value)
         {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = _userOrchestrator.AddUser(value);
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error during Creating a new user. Data attempted in JSON format: {0}", value.Stringify());
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            else
+            {
+                _logger.LogWarning("Invalid/Incomplete User Information - {0}", value.Stringify());
+                return BadRequest("Invalid request information. Please verify the information entered.");
+            }
         }
 
         // PUT: api/Users/5
-        [HttpPut("{UserId}")]
-        public void Put(string id, [FromBody] User value)
+        [HttpPut]
+        public IActionResult Put(string id, [FromBody]User value)
         {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = _userOrchestrator.EditUser(id, value);
+                    if (result)
+                        return Ok(result);
+                    else
+                        return NotFound();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error during Update with the values supplied in JSON Format - {0}", value.Stringify());
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            else
+            {
+                _logger.LogWarning("Invalid input during Update for the User - {1}. Check the model state information - {0}", ModelState.Values.Stringify(), id);
+                return BadRequest("Invalid request information. Please verify the information entered.");
+            }
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{UserId}")]
-        public void Delete(string id)
+        // DELETE: api/Users/5
+        [HttpDelete]
+        public IActionResult Delete(string id)
         {
+            try
+            {
+                var result = _userOrchestrator.DeleteUser(id);
+                _logger.LogWarning($"User {id} was attempted to be deleted and it status - {result}");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during Delete for UserId - {0}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Search for users with any keyword that may match their Firstname, Last name or User ID
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="matchExact"></param>
+        /// <param name="fieldType"></param>
+        /// <returns></returns>
+        [HttpGet("Search")]
+        [ActionName("Search")]
+        public IActionResult Search(string keyword, bool matchExact = false, string fieldType = "")
+        {
+            try
+            {
+                return Ok(_userOrchestrator.Search(keyword, matchExact, fieldType));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error during Search by {keyword} with additional params exactMatch-{matchExact} and fieldType- {fieldType}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

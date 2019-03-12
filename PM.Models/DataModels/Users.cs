@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PM.Models.DataModels
 {
-    [Table("User")]
+    [Table("Users")]
     public class User
     {
         [Key]
