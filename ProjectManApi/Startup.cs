@@ -120,10 +120,14 @@ namespace PM.Api
                 .AddScoped<UsersController, UsersController>()
                 .AddScoped<ProjectsController, ProjectsController>()
                 .AddScoped<HealthController, HealthController>()
+                .AddScoped<LogsController, LogsController>()
                 .AddScoped<TasksController, TasksController>();
             #endregion
         }
 
+        /// <summary>
+        /// Logging configuration
+        /// </summary>
         void SetupLogging()
         {
             // Initialize the Logger
