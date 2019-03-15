@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,5 +27,7 @@ namespace PM.Models.DataModels
         private DateTime _createdValue;
 
         public DateTime? EndDate { get; set; }
+        public ICollection<Project> Projects { get; set; }
+        public ICollection<Task> Tasks { get; set; }
     }
 }

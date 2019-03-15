@@ -12,7 +12,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Tasks Controller
     /// </summary>
-    [EnableCors]
+    //[EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : Controller
@@ -152,54 +152,6 @@ namespace PM.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-        //// GET: api/Projects/{ProjId}/Tasks
-        //[HttpGet("{ProjectId}/Tasks")]
-        //[Route("api/Projects/{ProjectId}/Tasks")]
-        //public IActionResult GetAllTasksForProject(int projectId)
-        //{
-        //    try
-        //    {
-        //        return Ok(taskLogic.GetAllTasksForProject(projectId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Tasks by ProjectId - {projectId}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
-        //// GET: api/Users/{UserId}/Tasks
-        //[HttpGet("Users/{UserId}/Tasks")]
-        //[Route("api/Users/{UserId}/Tasks")]
-        //public IActionResult GetAllTasksForUser(string UserId)
-        //{
-        //    try
-        //    {
-        //        return Ok(taskLogic.GetAllTasksForUser(UserId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Tasks by User Id - {UserId}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
-        //// GET: api/Users/{UserId}/Projects/{ProjectId}/Tasks
-        //[HttpGet("Users/{UserId}/Projects/{projId}/Tasks")]
-        //[Route("api/Users/{UserId}/Projects/{projId}/Tasks")]
-        //public IActionResult GetAllTasksForUserByProject(string UserId, int projId)
-        //{
-        //    try
-        //    {
-        //        return Ok(taskLogic.GetUserProjectTasks(UserId, projId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Tasks by User Id - {UserId} by Project Id - {projId}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
 
         [HttpPost]
         [Route("api/Tasks/{taskId}/End")]

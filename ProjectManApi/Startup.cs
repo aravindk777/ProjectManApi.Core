@@ -41,7 +41,7 @@ namespace PM.Api
         /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;            
         }
 
         /// <summary>
@@ -55,27 +55,43 @@ namespace PM.Api
         /// <param name="services">Servicecollection object</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Cors
             // Enable Cors
-            services.AddCors();
+            services.AddCors(feature => {
+                feature.AddPolicy(
+                    "ProjectManagerApiCors",
+                    policy => policy.AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowAnyOrigin()
+                                    .AllowCredentials()
+                                );
+            });
+            #endregion
 
+            #region Swagger and documentation
             // Documentation
             var documentationXmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var XmlFilePath = Path.Combine(AppContext.BaseDirectory, documentationXmlFile);
-            
             // Add Swagger documentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Project Manager API Documentation", Version = "v1", Description = "Lists all the operations for the Project Manager api" });
                 c.IncludeXmlComments(XmlFilePath);
             });
+            #endregion
 
+            #region Enbale Mvc
             // Enable Mvc
             services.AddMvc();
             services.AddMvcCore().AddApiExplorer();
+            #endregion
 
+            #region DB context instantiation
             // Setup DB connection
-            services.AddDbContext<PMDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<PMDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PMDb")));
+            #endregion  
 
+            #region Dependency Injection
             // ---- Db connections ----
             services.AddScoped<PMDbContext, PMDbContext>()
 
@@ -86,7 +102,6 @@ namespace PM.Api
                 .AddScoped<IRepository<Project>, Repository<Project>>()
                 .AddScoped<ITaskRepository, TaskRepository>()
                 .AddScoped<IRepository<Task>, Repository<Task>>()
-
 
                 // ---- Service Providers ----
                 .AddScoped<IUserLogic, UserLogic>()
@@ -106,6 +121,7 @@ namespace PM.Api
                 .AddScoped<ProjectsController, ProjectsController>()
                 .AddScoped<HealthController, HealthController>()
                 .AddScoped<TasksController, TasksController>();
+            #endregion
         }
 
         void SetupLogging()
@@ -162,13 +178,8 @@ namespace PM.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Manager API");
                 c.RoutePrefix = string.Empty;
             });
+            app.UseCors("ProjectManagerApiCors");
             app.UseMvc();
-            app.UseCors();
-        }
-
-        void DoRedirectForSwagger(HttpContext context)
-        {
-            context.Response.Redirect("/swagger/v1");
         }
     }
 }

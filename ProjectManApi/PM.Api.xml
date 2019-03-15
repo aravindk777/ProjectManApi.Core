@@ -14,11 +14,26 @@
             Projects Controller
             </summary>
         </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.#ctor(PM.BL.Projects.IProjectLogic,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.ProjectsController},PM.BL.Tasks.ITaskLogic)">
+            <summary>
+            Injection constructor for Projects Controller
+            </summary>
+            <param name="projectOrhestrator"></param>
+            <param name="_logInstance"></param>
+            <param name="taskLogicInstance"></param>
+        </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Get">
             <summary>
             Get all Projects list
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.GetAllTasksForProject(System.Int32)">
+            <summary>
+            Get all Tasks for project Id
+            </summary>
+            <param name="projectId">Project Id</param>
+            <returns>List of tasks under the project ID</returns>
         </member>
         <member name="T:PM.Api.Controllers.TasksController">
             <summary>
@@ -57,6 +72,14 @@
             <param name="fieldType"></param>
             <returns></returns>
         </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetUserProjects(System.String)">
+            <summary>
+            Returns list of projects associated to the manager by UserId
+            </summary>
+            <param name="userId">UserId of the manager</param>
+            <returns>List of Projects belonging to the User</returns>
+            <example>api/Users/user1/Projects</example>
+        </member>
         <member name="T:PM.Api.Extensions.HelperExtns">
             <summary>
             Helper method to create JSON string from the object
@@ -73,6 +96,12 @@
             <summary>
             Main Program console for the Web Api
             </summary>
+        </member>
+        <member name="M:PM.Api.Program.Main(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
         </member>
         <member name="T:PM.Api.Startup">
             <summary>
