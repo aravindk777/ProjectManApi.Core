@@ -9,7 +9,7 @@ namespace PM.Api
     public class Program
     {
         /// <summary>
-        /// 
+        /// Main method for the .net core Web api
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
@@ -17,6 +17,11 @@ namespace PM.Api
             CreateWebHostBuilder(args).Build().Run();
         }
 
+        /// <summary>
+        /// Host builder method
+        /// </summary>
+        /// <param name="args">cmd args</param>
+        /// <returns>IWebHostBuilder</returns>
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();

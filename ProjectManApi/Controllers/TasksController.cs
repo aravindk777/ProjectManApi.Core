@@ -20,6 +20,11 @@ namespace PM.Api.Controllers
         private readonly ITaskLogic taskLogic;
         private readonly ILogger<TasksController> _logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_logic"></param>
+        /// <param name="logger"></param>
         public TasksController(ITaskLogic _logic, ILogger<TasksController> logger)
         {
             taskLogic = _logic;
@@ -46,6 +51,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Tasks/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -90,7 +100,11 @@ namespace PM.Api.Controllers
 
         // POST: api/Tasks
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Post([FromBody] Task value)
         {
@@ -116,6 +130,12 @@ namespace PM.Api.Controllers
         }
 
         // PUT: api/Tasks/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Task value)
         {
@@ -139,6 +159,11 @@ namespace PM.Api.Controllers
         }
 
         // DELETE: api/Tasks/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IActionResult Delete(int id)
         {
@@ -153,6 +178,11 @@ namespace PM.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/Tasks/{taskId}/End")]
         public IActionResult EndTask(int taskId)

@@ -58,6 +58,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Projects/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -73,6 +78,11 @@ namespace PM.Api.Controllers
         }
 
         // POST: api/Projects
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Post([FromBody]Project value)
         {
@@ -98,6 +108,12 @@ namespace PM.Api.Controllers
         }
 
         // PUT: api/Projects/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Project value)
         {
@@ -125,6 +141,11 @@ namespace PM.Api.Controllers
         }
 
         // DELETE: api/Projects/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IActionResult Delete(int id)
         {
