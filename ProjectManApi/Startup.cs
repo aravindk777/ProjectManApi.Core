@@ -39,9 +39,16 @@ namespace PM.Api
         /// Constructor with DI
         /// </summary>
         /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            Configuration = configuration;            
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            Configuration = builder;
+
         }
 
         /// <summary>
@@ -112,7 +119,7 @@ namespace PM.Api
                 .AddLogging(log =>
                 {
                     log.AddConsole();
-                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
+                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true, });
                     SetupLogging();
                 })
 
@@ -129,7 +136,7 @@ namespace PM.Api
         /// Logging configuration
         /// </summary>
         void SetupLogging()
-        {
+        {            
             // Initialize the Logger
             var nlogConfig = new LoggingConfiguration();
 
@@ -142,8 +149,8 @@ namespace PM.Api
                 FileName = @"c:\AK\Logs\PMApi\PMApi.Core.log",
                 Layout = @"${date:format=yyyy-MM-dd-hh\:mm\:ss} ${level} ${message}  ${exception:format=tostring}    ${exception:format=stackTrace}    ${exception:format=InnerException}",
                 ArchiveNumbering = ArchiveNumberingMode.Date,
-                Header = NLog.Layouts.Layout.FromString("_________________________________"),
-                Footer = NLog.Layouts.Layout.FromString("=================================")
+                Header = NLog.Layouts.Layout.FromString("__________________________________________________________________"),
+                Footer = NLog.Layouts.Layout.FromString("==================================================================")
             };
             nlogConfig.AddTarget(fileTarget);
             nlogConfig.AddRuleForAllLevels(fileTarget);
@@ -164,6 +171,8 @@ namespace PM.Api
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+            //loggerFactory.AddNLog(Configuration);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
