@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
@@ -146,7 +140,7 @@ namespace PM.Api
                 //ArchiveAboveSize = 1024 * 1024,
                 ArchiveEvery = FileArchivePeriod.Day,
                 CreateDirs = true,
-                FileName = @"c:\AK\Logs\PMApi\PMApi.Core.log",
+                FileName = @"c:\Logs\PMApi\PMApi.Core.log",
                 Layout = @"${date:format=yyyy-MM-dd-hh\:mm\:ss} ${level} ${message}  ${exception:format=tostring}    ${exception:format=stackTrace}    ${exception:format=InnerException}",
                 ArchiveNumbering = ArchiveNumberingMode.Date,
                 Header = NLog.Layouts.Layout.FromString("__________________________________________________________________"),

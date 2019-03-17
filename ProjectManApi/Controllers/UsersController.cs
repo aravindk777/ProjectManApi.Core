@@ -27,6 +27,13 @@ namespace PM.Api.Controllers
         private ITaskLogic taskOrchestrator;
         private readonly ILogger<UsersController> _logger;
 
+        /// <summary>
+        /// Injection constructor
+        /// </summary>
+        /// <param name="_userlogicInstance">User Business layer instance</param>
+        /// <param name="logInstance">logger instance</param>
+        /// <param name="_projectLogicInstance">Project business layer</param>
+        /// <param name="_taskLogicInstance">Task Logic instance</param>
         public UsersController(IUserLogic _userlogicInstance, ILogger<UsersController> logInstance, IProjectLogic _projectLogicInstance, ITaskLogic _taskLogicInstance)
         {
             _userOrchestrator = _userlogicInstance;
@@ -76,6 +83,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         //[Route("api/users/{UserId:alpha}")]
         //[ActionName("GetById")]
@@ -93,6 +105,11 @@ namespace PM.Api.Controllers
         }
 
         // POST: api/Users
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Post([FromBody] User value)
         {
@@ -117,6 +134,12 @@ namespace PM.Api.Controllers
         }
 
         // PUT: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult Put(string id, [FromBody]User value)
         {
@@ -144,6 +167,11 @@ namespace PM.Api.Controllers
         }
 
         // DELETE: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IActionResult Delete(string id)
         {
@@ -196,6 +224,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Users/{UserId}/Tasks
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
         [HttpGet("{UserId}/Tasks")]
         public IActionResult GetAllTasksForUser(string UserId)
         {
@@ -211,6 +244,12 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Users/{UserId}/Projects/{ProjectId}/Tasks
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="projId"></param>
+        /// <returns></returns>
         [HttpGet("{UserId}/Projects/{projId}/Tasks")]
         public IActionResult GetAllTasksForUserByProject(string UserId, int projId)
         {
