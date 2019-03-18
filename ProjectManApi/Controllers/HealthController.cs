@@ -11,7 +11,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Health check
     /// </summary>
-    [EnableCors]
+    //[EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class HealthController : Controller
@@ -19,12 +19,21 @@ namespace PM.Api.Controllers
         private readonly IUserRepository userRepo;
         private readonly ILogger<HealthController> _logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_userRepo"></param>
+        /// <param name="logInstance"></param>
         public HealthController(IUserRepository _userRepo, ILogger<HealthController> logInstance)
         {
             userRepo = _userRepo;
             _logger = logInstance;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("[action]")]
         [ActionName("Service")]
         public IActionResult ServiceStatus()
@@ -32,6 +41,10 @@ namespace PM.Api.Controllers
             return Ok(true);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("[action]")]
         [ActionName("Db")]
         public IActionResult DbStatus()

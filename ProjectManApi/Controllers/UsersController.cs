@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PM.Api.Extensions;
+using PM.BL.Projects;
+using PM.BL.Tasks;
 using PM.BL.Users;
 using PM.Models.ViewModels;
 using System;
@@ -15,17 +17,28 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Users Controller
     /// </summary>
-    [EnableCors]
+    //[EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
         private IUserLogic _userOrchestrator;
+        private IProjectLogic projOrchestrator;
+        private ITaskLogic taskOrchestrator;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IUserLogic _userlogicInstance, ILogger<UsersController> logInstance)
+        /// <summary>
+        /// Injection constructor
+        /// </summary>
+        /// <param name="_userlogicInstance">User Business layer instance</param>
+        /// <param name="logInstance">logger instance</param>
+        /// <param name="_projectLogicInstance">Project business layer</param>
+        /// <param name="_taskLogicInstance">Task Logic instance</param>
+        public UsersController(IUserLogic _userlogicInstance, ILogger<UsersController> logInstance, IProjectLogic _projectLogicInstance, ITaskLogic _taskLogicInstance)
         {
             _userOrchestrator = _userlogicInstance;
+            projOrchestrator = _projectLogicInstance;
+            taskOrchestrator = _taskLogicInstance;
             _logger = logInstance;
         }
 
@@ -70,6 +83,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         //[Route("api/users/{UserId:alpha}")]
         //[ActionName("GetById")]
@@ -87,6 +105,11 @@ namespace PM.Api.Controllers
         }
 
         // POST: api/Users
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Post([FromBody] User value)
         {
@@ -111,6 +134,12 @@ namespace PM.Api.Controllers
         }
 
         // PUT: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult Put(string id, [FromBody]User value)
         {
@@ -138,6 +167,11 @@ namespace PM.Api.Controllers
         }
 
         // DELETE: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IActionResult Delete(string id)
         {
@@ -172,6 +206,60 @@ namespace PM.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error during Search by {keyword} with additional params exactMatch-{matchExact} and fieldType- {fieldType}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Returns list of projects associated to the manager by UserId
+        /// </summary>
+        /// <param name="userId">UserId of the manager</param>
+        /// <returns>List of Projects belonging to the User</returns>
+        /// <example>api/Users/user1/Projects</example>
+        [HttpGet("{userId}/Projects")]
+        //[Route("api/Users/{userId}/Projects")]
+        public IActionResult GetUserProjects(string userId)
+        {
+            return Ok(projOrchestrator.GetUserProjects(userId));
+        }
+
+        // GET: api/Users/{UserId}/Tasks
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        [HttpGet("{UserId}/Tasks")]
+        public IActionResult GetAllTasksForUser(string UserId)
+        {
+            try
+            {
+                return Ok(taskOrchestrator.GetAllTasksForUser(UserId));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error during GET Tasks by User Id - {UserId}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        // GET: api/Users/{UserId}/Projects/{ProjectId}/Tasks
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="projId"></param>
+        /// <returns></returns>
+        [HttpGet("{UserId}/Projects/{projId}/Tasks")]
+        public IActionResult GetAllTasksForUserByProject(string UserId, int projId)
+        {
+            try
+            {
+                return Ok(taskOrchestrator.GetUserProjectTasks(UserId, projId));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error during GET Tasks by User Id - {UserId} by Project Id - {projId}");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

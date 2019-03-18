@@ -9,16 +9,49 @@
             Health check
             </summary>
         </member>
+        <member name="T:PM.Api.Controllers.LogsController">
+            <summary>
+            Logging Controller for Angular UI to be used
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.LogsController.#ctor(Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.LogsController})">
+            <summary>
+            Injection contructor with Log instance
+            </summary>
+            <param name="logInstance"></param>
+        </member>
+        <member name="M:PM.Api.Controllers.LogsController.Log(PM.Models.ViewModels.AppLogs)">
+            <summary>
+            Log method to log any info from UI. This will be utilized from the Angular UI so have better logging than just console.log
+            </summary>
+            <param name="logInfo">Logging parameters</param>
+            <returns>true</returns>
+        </member>
         <member name="T:PM.Api.Controllers.ProjectsController">
             <summary>
             Projects Controller
             </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.#ctor(PM.BL.Projects.IProjectLogic,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.ProjectsController},PM.BL.Tasks.ITaskLogic)">
+            <summary>
+            Injection constructor for Projects Controller
+            </summary>
+            <param name="projectOrhestrator"></param>
+            <param name="_logInstance"></param>
+            <param name="taskLogicInstance"></param>
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Get">
             <summary>
             Get all Projects list
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.GetAllTasksForProject(System.Int32)">
+            <summary>
+            Get all Tasks for project Id
+            </summary>
+            <param name="projectId">Project Id</param>
+            <returns>List of tasks under the project ID</returns>
         </member>
         <member name="T:PM.Api.Controllers.TasksController">
             <summary>
@@ -57,6 +90,14 @@
             <param name="fieldType"></param>
             <returns></returns>
         </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetUserProjects(System.String)">
+            <summary>
+            Returns list of projects associated to the manager by UserId
+            </summary>
+            <param name="userId">UserId of the manager</param>
+            <returns>List of Projects belonging to the User</returns>
+            <example>api/Users/user1/Projects</example>
+        </member>
         <member name="T:PM.Api.Extensions.HelperExtns">
             <summary>
             Helper method to create JSON string from the object
@@ -74,12 +115,25 @@
             Main Program console for the Web Api
             </summary>
         </member>
+        <member name="M:PM.Api.Program.Main(System.String[])">
+            <summary>
+            Main method for the .net core Api to start
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:PM.Api.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
         <member name="T:PM.Api.Startup">
             <summary>
             Startup object class
             </summary>
         </member>
-        <member name="M:PM.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:PM.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
             <summary>
             Constructor with DI
             </summary>
@@ -95,6 +149,11 @@
             This method gets called by the runtime. Use this method to add services to the container.
             </summary>
             <param name="services">Servicecollection object</param>
+        </member>
+        <member name="M:PM.Api.Startup.SetupLogging">
+            <summary>
+            Logging configuration
+            </summary>
         </member>
         <member name="M:PM.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>

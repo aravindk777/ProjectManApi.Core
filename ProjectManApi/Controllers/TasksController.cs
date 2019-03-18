@@ -12,7 +12,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Tasks Controller
     /// </summary>
-    [EnableCors]
+    //[EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : Controller
@@ -20,6 +20,11 @@ namespace PM.Api.Controllers
         private readonly ITaskLogic taskLogic;
         private readonly ILogger<TasksController> _logger;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_logic"></param>
+        /// <param name="logger"></param>
         public TasksController(ITaskLogic _logic, ILogger<TasksController> logger)
         {
             taskLogic = _logic;
@@ -46,6 +51,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Tasks/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -90,7 +100,11 @@ namespace PM.Api.Controllers
 
         // POST: api/Tasks
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Post([FromBody] Task value)
         {
@@ -116,6 +130,12 @@ namespace PM.Api.Controllers
         }
 
         // PUT: api/Tasks/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Task value)
         {
@@ -139,6 +159,11 @@ namespace PM.Api.Controllers
         }
 
         // DELETE: api/Tasks/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IActionResult Delete(int id)
         {
@@ -153,54 +178,11 @@ namespace PM.Api.Controllers
             }
         }
 
-        //// GET: api/Projects/{ProjId}/Tasks
-        //[HttpGet("{ProjectId}/Tasks")]
-        //[Route("api/Projects/{ProjectId}/Tasks")]
-        //public IActionResult GetAllTasksForProject(int projectId)
-        //{
-        //    try
-        //    {
-        //        return Ok(taskLogic.GetAllTasksForProject(projectId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Tasks by ProjectId - {projectId}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
-        //// GET: api/Users/{UserId}/Tasks
-        //[HttpGet("Users/{UserId}/Tasks")]
-        //[Route("api/Users/{UserId}/Tasks")]
-        //public IActionResult GetAllTasksForUser(string UserId)
-        //{
-        //    try
-        //    {
-        //        return Ok(taskLogic.GetAllTasksForUser(UserId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Tasks by User Id - {UserId}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
-        //// GET: api/Users/{UserId}/Projects/{ProjectId}/Tasks
-        //[HttpGet("Users/{UserId}/Projects/{projId}/Tasks")]
-        //[Route("api/Users/{UserId}/Projects/{projId}/Tasks")]
-        //public IActionResult GetAllTasksForUserByProject(string UserId, int projId)
-        //{
-        //    try
-        //    {
-        //        return Ok(taskLogic.GetUserProjectTasks(UserId, projId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Tasks by User Id - {UserId} by Project Id - {projId}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/Tasks/{taskId}/End")]
         public IActionResult EndTask(int taskId)

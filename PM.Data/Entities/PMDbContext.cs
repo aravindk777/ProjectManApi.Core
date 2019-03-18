@@ -14,29 +14,37 @@ namespace PM.Data.Entities
 
         public PMDbContext(DbContextOptions<PMDbContext> options) : base(options)
         {
+            //Database.EnsureDeleted();
+            Database.EnsureCreated();
+            Projects.Include(m => m.Manager).Load();
+            Tasks.Include(p => p.Project).Load();
+            Tasks.Include(t => t.ParentTask).Load();
+            Tasks.Include(u => u.TaskOwner).Load();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             builder.Entity<Project>()
-                .HasOne(u => u.Manager)
-                .WithMany()
+                .HasOne(m => m.Manager)
+                .WithMany(p => p.Projects)
                 .HasForeignKey(fk => fk.ManagerId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Task>()
                 .HasOne(t => t.Project)
-                .WithMany()
+                .WithMany(t => t.Tasks)
                 .HasForeignKey(fk => fk.ProjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Task>()
                 .HasOne(t => t.TaskOwner)
-                .WithMany()
+                .WithMany(t => t.Tasks)
                 .HasForeignKey(fk => fk.TaskOwnerId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
-            //builder.Entity<Users>()
+
+
         }
     }
 }

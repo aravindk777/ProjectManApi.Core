@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PM.Api.Extensions;
 using PM.BL.Projects;
+using PM.BL.Tasks;
 using PM.Models.ViewModels;
 using System;
 using System.Linq;
@@ -19,11 +20,19 @@ namespace PM.Api.Controllers
     public class ProjectsController : Controller
     {
         private IProjectLogic _projectOrhestrator;
+        private ITaskLogic _taskOrhestrator;
         private ILogger<ProjectsController> logger;
 
-        public ProjectsController(IProjectLogic projectOrhestrator, ILogger<ProjectsController> _logInstance)
+        /// <summary>
+        /// Injection constructor for Projects Controller
+        /// </summary>
+        /// <param name="projectOrhestrator"></param>
+        /// <param name="_logInstance"></param>
+        /// <param name="taskLogicInstance"></param>
+        public ProjectsController(IProjectLogic projectOrhestrator, ILogger<ProjectsController> _logInstance, ITaskLogic taskLogicInstance)
         {
             _projectOrhestrator = projectOrhestrator;
+            _taskOrhestrator = taskLogicInstance;
             logger = _logInstance;
         }
 
@@ -49,6 +58,11 @@ namespace PM.Api.Controllers
         }
 
         // GET: api/Projects/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -64,6 +78,11 @@ namespace PM.Api.Controllers
         }
 
         // POST: api/Projects
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Post([FromBody]Project value)
         {
@@ -106,6 +125,12 @@ namespace PM.Api.Controllers
         }
 
         // PUT: api/Projects/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Project value)
         {
@@ -133,6 +158,11 @@ namespace PM.Api.Controllers
         }
 
         // DELETE: api/Projects/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public IActionResult Delete(int id)
         {
@@ -148,17 +178,25 @@ namespace PM.Api.Controllers
             }
         }
 
+
+        // GET: api/Projects/{ProjId}/Tasks
         /// <summary>
-        /// Returns list of projects associated to the manager by UserId
+        /// Get all Tasks for project Id
         /// </summary>
-        /// <param name="userId">UserId of the manager</param>
-        /// <returns>List of Projects belonging to the User</returns>
-        /// <example>api/Users/user1/Projects</example>
-        [HttpGet("{UserId}/Projects")]
-        [Route("api/Users/{userId}/Projects")]
-        public IActionResult GetUserProjects(string userId)
+        /// <param name="projectId">Project Id</param>
+        /// <returns>List of tasks under the project ID</returns>
+        [HttpGet("{projectId}/Tasks")]
+        public IActionResult GetAllTasksForProject(int projectId)
         {
-            return Ok(_projectOrhestrator.GetUserProjects(userId));
+            try
+            {
+                return Ok(_taskOrhestrator.GetAllTasksForProject(projectId));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error during GET Tasks by ProjectId - {projectId}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

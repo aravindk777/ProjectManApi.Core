@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,10 +18,11 @@ namespace PM.Models.DataModels
         [Range(1, 30)]
         public int Priority { get; set; }
 
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime? ProjectStart { get; set; }
+        public DateTime? ProjectEnd { get; set; }
 
         public Guid? ManagerId { get; set; }
-        public virtual User Manager { get; set; }
+        public User Manager { get; set; }
+        public ICollection<Task> Tasks { get; set; }
     }
 }

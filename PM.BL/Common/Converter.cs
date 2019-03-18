@@ -111,6 +111,7 @@ namespace PM.BL.Common
                 .ForMember(vm => vm.OwnerFullName, dm => dm.MapFrom(m => m.TaskOwner != null ? m.TaskOwner.FirstName + (!string.IsNullOrEmpty(m.TaskOwner.LastName) ? $" {m.TaskOwner.LastName}" : string.Empty) : string.Empty))
                 .ForMember(vm => vm.ProjectName, dm => dm.MapFrom(m => m.Project != null ? m.Project.ProjectName : string.Empty))
                 .ForMember(vm => vm.ParentTaskName, dm => dm.MapFrom(m => m.ParentTask != null ? m.ParentTask.TaskName : string.Empty))
+                .ForMember(vm => vm.IsParent, dm => dm.MapFrom(m => m.ParentTask == null ? true: false))
                 .ReverseMap();
             });
 
@@ -124,6 +125,7 @@ namespace PM.BL.Common
                 .ForMember(vm => vm.OwnerFullName, dm => dm.MapFrom(m => m.TaskOwner != null ? m.TaskOwner.FirstName + (!string.IsNullOrEmpty(m.TaskOwner.LastName) ? $" {m.TaskOwner.LastName}" : string.Empty) : string.Empty))
                 .ForMember(vm => vm.ProjectName, dm => dm.MapFrom(m => m.Project != null ? m.Project.ProjectName : string.Empty))
                 .ForMember(vm => vm.ParentTaskName, dm => dm.MapFrom(m => m.ParentTask != null ? m.ParentTask.TaskName : string.Empty))
+                .ForMember(vm => vm.IsParent, dm => dm.MapFrom(m => m.ParentTask == null ? true : false))
                 .ReverseMap();
             });
 

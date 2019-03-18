@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
@@ -39,9 +33,16 @@ namespace PM.Api
         /// Constructor with DI
         /// </summary>
         /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            Configuration = builder;
+
         }
 
         /// <summary>
@@ -55,27 +56,43 @@ namespace PM.Api
         /// <param name="services">Servicecollection object</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Cors
             // Enable Cors
-            services.AddCors();
+            services.AddCors(feature => {
+                feature.AddPolicy(
+                    "ProjectManagerApiCors",
+                    policy => policy.AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowAnyOrigin()
+                                    .AllowCredentials()
+                                );
+            });
+            #endregion
 
+            #region Swagger and documentation
             // Documentation
             var documentationXmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var XmlFilePath = Path.Combine(AppContext.BaseDirectory, documentationXmlFile);
-            
             // Add Swagger documentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Project Manager API Documentation", Version = "v1", Description = "Lists all the operations for the Project Manager api" });
                 c.IncludeXmlComments(XmlFilePath);
             });
+            #endregion
 
+            #region Enbale Mvc
             // Enable Mvc
             services.AddMvc();
             services.AddMvcCore().AddApiExplorer();
+            #endregion
 
+            #region DB context instantiation
             // Setup DB connection
-            services.AddDbContext<PMDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<PMDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PMDb")));
+            #endregion  
 
+            #region Dependency Injection
             // ---- Db connections ----
             services.AddScoped<PMDbContext, PMDbContext>()
 
@@ -87,7 +104,6 @@ namespace PM.Api
                 .AddScoped<ITaskRepository, TaskRepository>()
                 .AddScoped<IRepository<Task>, Repository<Task>>()
 
-
                 // ---- Service Providers ----
                 .AddScoped<IUserLogic, UserLogic>()
                 .AddScoped<IProjectLogic, ProjectLogic>()
@@ -97,7 +113,7 @@ namespace PM.Api
                 .AddLogging(log =>
                 {
                     log.AddConsole();
-                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
+                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true, });
                     SetupLogging();
                 })
 
@@ -105,11 +121,16 @@ namespace PM.Api
                 .AddScoped<UsersController, UsersController>()
                 .AddScoped<ProjectsController, ProjectsController>()
                 .AddScoped<HealthController, HealthController>()
+                .AddScoped<LogsController, LogsController>()
                 .AddScoped<TasksController, TasksController>();
+            #endregion
         }
 
+        /// <summary>
+        /// Logging configuration
+        /// </summary>
         void SetupLogging()
-        {
+        {            
             // Initialize the Logger
             var nlogConfig = new LoggingConfiguration();
 
@@ -119,11 +140,11 @@ namespace PM.Api
                 //ArchiveAboveSize = 1024 * 1024,
                 ArchiveEvery = FileArchivePeriod.Day,
                 CreateDirs = true,
-                FileName = @"c:\AK\Logs\PMApi\PMApi.Core.log",
+                FileName = @"c:\Logs\PMApi\PMApi.Core.log",
                 Layout = @"${date:format=yyyy-MM-dd-hh\:mm\:ss} ${level} ${message}  ${exception:format=tostring}    ${exception:format=stackTrace}    ${exception:format=InnerException}",
                 ArchiveNumbering = ArchiveNumberingMode.Date,
-                Header = NLog.Layouts.Layout.FromString("_________________________________"),
-                Footer = NLog.Layouts.Layout.FromString("=================================")
+                Header = NLog.Layouts.Layout.FromString("__________________________________________________________________"),
+                Footer = NLog.Layouts.Layout.FromString("==================================================================")
             };
             nlogConfig.AddTarget(fileTarget);
             nlogConfig.AddRuleForAllLevels(fileTarget);
@@ -144,6 +165,8 @@ namespace PM.Api
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+            //loggerFactory.AddNLog(Configuration);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -162,13 +185,8 @@ namespace PM.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Manager API");
                 c.RoutePrefix = string.Empty;
             });
+            app.UseCors("ProjectManagerApiCors");
             app.UseMvc();
-            app.UseCors();
-        }
-
-        void DoRedirectForSwagger(HttpContext context)
-        {
-            context.Response.Redirect("/swagger/v1");
         }
     }
 }
