@@ -88,6 +88,23 @@ namespace PM.Api.Controllers
             }
         }
 
+        // POST to End a project
+        [HttpPost]
+        [Route("{id}/End")]
+        public IActionResult EndProject(int id)
+        {
+            try
+            {
+                var status = _projectOrhestrator.EndProject(id);
+                return Ok(status);
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "Error during Ending a project for " + id);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         // PUT: api/Projects/5
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Project value)
@@ -137,11 +154,11 @@ namespace PM.Api.Controllers
         /// <param name="userId">UserId of the manager</param>
         /// <returns>List of Projects belonging to the User</returns>
         /// <example>api/Users/user1/Projects</example>
-        //[HttpGet("{UserId}/Projects")]
-        //[Route("api/Users/{userId}/Projects")]
-        //public IActionResult GetUserProjects(string userId)
-        //{
-        //    return Ok(_projectOrhestrator.GetUserProjects(userId));
-        //}
+        [HttpGet("{UserId}/Projects")]
+        [Route("api/Users/{userId}/Projects")]
+        public IActionResult GetUserProjects(string userId)
+        {
+            return Ok(_projectOrhestrator.GetUserProjects(userId));
+        }
     }
 }
