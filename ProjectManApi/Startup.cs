@@ -32,7 +32,8 @@ namespace PM.Api
         /// <summary>
         /// Constructor with DI
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="configuration">Configuration</param>
+        /// <param name="environment">Environment</param>
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             var builder = new ConfigurationBuilder()

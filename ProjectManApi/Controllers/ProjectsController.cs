@@ -91,8 +91,8 @@ namespace PM.Api.Controllers
                 try
                 {
                     var result = _projectOrhestrator.CreateProject(value);
-                    var createdUrl = string.Join("/", Request.Path, result.ProjectId);
-                    return Created(createdUrl, result);
+                    //var createdUrl = string.Join("/", Request.Path, result.ProjectId);
+                    return Created(string.Concat("/",result.ProjectId), result);
                 }
                 catch (Exception ex)
                 {

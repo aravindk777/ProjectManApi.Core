@@ -20,6 +20,7 @@ namespace PM.Api
             CreateWebHostBuilder(args).Build().Run();
         }
 
+        /// <summary>
         /// Host builder method
         /// </summary>
         /// <param name="args">cmd args</param>

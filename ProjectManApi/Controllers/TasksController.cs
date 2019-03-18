@@ -21,10 +21,10 @@ namespace PM.Api.Controllers
         private readonly ILogger<TasksController> _logger;
 
         /// <summary>
-        /// 
+        /// Injection Constructor
         /// </summary>
-        /// <param name="_logic"></param>
-        /// <param name="logger"></param>
+        /// <param name="_logic">task Logic layer instance</param>
+        /// <param name="logger">Logger instnace</param>
         public TasksController(ITaskLogic _logic, ILogger<TasksController> logger)
         {
             taskLogic = _logic;
@@ -52,10 +52,10 @@ namespace PM.Api.Controllers
 
         // GET: api/Tasks/5
         /// <summary>
-        /// 
+        /// Get a specific task details
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Task Id</param>
+        /// <returns>Task Entity</returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -76,35 +76,11 @@ namespace PM.Api.Controllers
             }
         }
 
-        // GET: api/Tasks/taskname
-        //[HttpGet]
-        //[ActionName("GetByName")]
-        //public IActionResult GetByName(string name)
-        //{
-        //    try
-        //    {
-        //        var result = taskLogic.GetTask(0, name);
-        //        if (result == null)
-        //        {
-        //            _logger.LogWarning($"No data available for GET Task by Name: {name}");
-        //            return NotFound();
-        //        }
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error during GET Task by Name: {name}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
-        // POST: api/Tasks
-
         /// <summary>
-        /// 
+        /// Creates a new Task
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">Task information</param>
+        /// <returns>Created Task information</returns>
         [HttpPost]
         public IActionResult Post([FromBody] Task value)
         {
@@ -113,8 +89,8 @@ namespace PM.Api.Controllers
                 try
                 {
                     var result = taskLogic.CreateTask(value);
-                    var createdUrl = string.Join("/", Request.Path, result.TaskId);
-                    return Created(createdUrl, result);
+                    //var createdUrl = string.Join("/", Request.Path, result.TaskId);
+                    return Created(string.Concat("/", result.TaskId), result);
                 }
                 catch (Exception ex)
                 {
@@ -131,11 +107,11 @@ namespace PM.Api.Controllers
 
         // PUT: api/Tasks/5
         /// <summary>
-        /// 
+        /// Update a selected task with new information
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="id">task Id</param>
+        /// <param name="value">New information</param>
+        /// <returns>boolean status of the update</returns>
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Task value)
         {
@@ -160,10 +136,10 @@ namespace PM.Api.Controllers
 
         // DELETE: api/Tasks/5
         /// <summary>
-        /// 
+        /// Deletes a given task by the Task Id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Task ID</param>
+        /// <returns>Boolean status of the delete request</returns>
         [HttpDelete]
         public IActionResult Delete(int id)
         {
@@ -179,10 +155,10 @@ namespace PM.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Ends a task by marking the Enddate as today
         /// </summary>
-        /// <param name="taskId"></param>
-        /// <returns></returns>
+        /// <param name="taskId">Task Id</param>
+        /// <returns>Boolean status of the Task End request</returns>
         [HttpPost]
         [Route("api/Tasks/{taskId}/End")]
         public IActionResult EndTask(int taskId)
