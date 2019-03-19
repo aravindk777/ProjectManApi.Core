@@ -13,6 +13,7 @@ namespace PM.Models.ViewModels
         public int Priority { get; set; }
         public DateTime? ProjectStart { get; set; }
         public DateTime? ProjectEnd { get; set; }
+        public bool IsActive { get; set; }
         [Required]
         public Guid ManagerId { get; set; }
         public string ManagerName { get; set; }

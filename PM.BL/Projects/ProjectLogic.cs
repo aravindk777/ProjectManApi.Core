@@ -24,6 +24,18 @@ namespace PM.BL.Projects
             return _projectRepo.Create(project.AsDataModel()).AsViewModel();
         }
 
+        public bool EndProject(int projId)
+        {
+            var projectToEnd = _projectRepo.GetById(projId);
+            if (projectToEnd != null)
+            {
+                projectToEnd.EndDate = System.DateTime.Today;
+                return _projectRepo.Update(projectToEnd);
+            }
+            else
+                return false;
+        }
+
         public IEnumerable<Project> GetAllProjects()
         {
             return _projectRepo.GetAll().AsViewModel();

@@ -14,7 +14,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Projects Controller
     /// </summary>
-    //[EnableCors]
+    [EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectsController : Controller
@@ -107,6 +107,23 @@ namespace PM.Api.Controllers
             }
         }
 
+        // POST to End a project
+        [HttpPost]
+        [Route("{id}/End")]
+        public IActionResult EndProject(int id)
+        {
+            try
+            {
+                var status = _projectOrhestrator.EndProject(id);
+                return Ok(status);
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "Error during Ending a project for " + id);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         // PUT: api/Projects/5
         /// <summary>
         /// 
@@ -160,6 +177,7 @@ namespace PM.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
         // GET: api/Projects/{ProjId}/Tasks
         /// <summary>
