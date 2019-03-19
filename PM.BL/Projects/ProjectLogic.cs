@@ -19,18 +19,17 @@ namespace PM.BL.Projects
             return _projectRepo.Count();
         }
 
-        public Project CreateProject(Models.ViewModels.Project project)
+        public Project CreateProject(Project project)
         {
             return _projectRepo.Create(project.AsDataModel()).AsViewModel();
         }
 
-        public IEnumerable<Models.ViewModels.Project> GetAllProjects()
+        public IEnumerable<Project> GetAllProjects()
         {
             return _projectRepo.GetAll().AsViewModel();
-            //.Select(item => item.AsViewModel());
         }
 
-        public Project GetProject(int projId = 0, string projectName = "")
+        public Project GetProject(int projId)
         {
             return _projectRepo.GetById(projId).AsViewModel();
         }
@@ -38,9 +37,6 @@ namespace PM.BL.Projects
         public IEnumerable<Project> GetUserProjects(string userId)
         {
             var result = _projectRepo.Search(p => p.Manager.UserId == userId).AsViewModel();
-            //.Select(item => item.AsViewModel());
-            //var finaldata = result.AsViewModel();
-            //return _projectRepo.GetAll().Where(usr => usr.Manager.UserId == userId).AsViewModel();
             return result;
         }
 
@@ -54,7 +50,11 @@ namespace PM.BL.Projects
 
         public bool Remove(int projId)
         {
-            return _projectRepo.Delete(_projectRepo.GetById(projId));
+            var projectToDelete = _projectRepo.GetById(projId);
+            if (projectToDelete != null)
+                return _projectRepo.Delete(projectToDelete);
+            else
+                return false;
         }
     }
 }

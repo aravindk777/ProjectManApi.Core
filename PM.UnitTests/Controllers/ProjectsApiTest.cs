@@ -96,7 +96,7 @@ namespace PM.UnitTests.Controllers
             // Arrange
             int testProjectId = 1;
             var validMockData = mockProjectsList.FirstOrDefault(p => p.ProjectId == testProjectId);
-            mockProjectsLogic.Setup(u => u.GetProject(testProjectId, It.IsAny<string>())).Returns(validMockData);
+            mockProjectsLogic.Setup(u => u.GetProject(testProjectId)).Returns(validMockData);
 
             // Act
             var result = mockController.Get(testProjectId);
@@ -115,7 +115,7 @@ namespace PM.UnitTests.Controllers
             // Arrange
             int testProjectId = 5;
             var expectedErrMsg = "Db connection failure test";
-            mockProjectsLogic.Setup(u => u.GetProject(testProjectId, It.IsAny<string>())).Throws(new Exception(expectedErrMsg));
+            mockProjectsLogic.Setup(u => u.GetProject(testProjectId)).Throws(new Exception(expectedErrMsg));
 
             // Act
             var result = mockController.Get(testProjectId);

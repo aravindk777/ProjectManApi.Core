@@ -112,7 +112,7 @@ namespace PM.UnitTests.Controllers
         public void Test_GetActiveUsers_ThrowsException()
         {
             // Arrange
-            var activeUsersMockData = mockUsersList.Where(u => u.Active);
+            var activeUsersMockData = mockUsersList;
             var expectedErrMsg = "No data causing Null Reference during Where filter";
             mockUserLogic.Setup(u => u.GetUsers(true)).Throws(new System.NullReferenceException(expectedErrMsg));
 
@@ -392,7 +392,7 @@ namespace PM.UnitTests.Controllers
         {
             // Arrange
             string testSearchKeyword = "User1First";
-            var searchResult = mockUsersList.Where(u => u.FirstName.ToLower().Contains(testSearchKeyword.ToLower()));
+            var searchResult = mockUsersList.Any(u => u.FirstName.Contains(testSearchKeyword));
             var expectedErrMsg = "Test Exception raised";
             mockUserLogic.Setup(api => api.Search(testSearchKeyword, It.IsAny<bool>(), It.IsAny<string>())).Throws(new System.Exception(expectedErrMsg));
 
