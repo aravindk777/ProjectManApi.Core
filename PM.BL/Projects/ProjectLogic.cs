@@ -29,7 +29,7 @@ namespace PM.BL.Projects
             var projectToEnd = _projectRepo.GetById(projId);
             if (projectToEnd != null)
             {
-                projectToEnd.EndDate = System.DateTime.Today;
+                projectToEnd.ProjectEnd = System.DateTime.Today;
                 return _projectRepo.Update(projectToEnd);
             }
             else

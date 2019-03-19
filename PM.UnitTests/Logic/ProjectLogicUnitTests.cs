@@ -123,5 +123,23 @@ namespace PM.UnitTests.Logic
             // Assert
             Assert.Equal(expectedResult, actualResult);
         }
+
+        [Theory(DisplayName = "Test - End a Project")]
+        [InlineData(3, true)]
+        [InlineData(90, false)]
+        public void Test_For_End_Project(int projectIdToEnd, bool expectedResult)
+        {
+            // Arrange
+            var projectToEnd = new Models.ViewModels.Project() { ProjectId = projectIdToEnd, ProjectName = "TestProject-XXX", ManagerId = Guid.NewGuid(), Priority = 20 };
+            var projectDataModel = expectedResult ? projectToEnd.AsDataModel() : null;
+            mockProjectRepository.Setup(repo => repo.GetById(projectIdToEnd)).Returns(projectDataModel);
+            mockProjectRepository.Setup(repo => repo.Update(It.IsAny<Models.DataModels.Project>())).Returns(expectedResult);
+
+            // Act
+            var actualResult = projectLogicTest.EndProject(projectIdToEnd);
+
+            // Assert
+            Assert.Equal(expectedResult, actualResult);
+        }
     }
 }
