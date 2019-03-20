@@ -144,7 +144,7 @@ namespace PM.BL.Common
         public static IEnumerable<Models.DataModels.Task> AsDataModel(this IEnumerable<Models.ViewModels.Task> taskData)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<IEnumerable<Models.ViewModels.Task>, IEnumerable<Models.DataModels.Task>>().ReverseMap();
+                cfg.CreateMap<Models.ViewModels.Task, Models.DataModels.Task>().ReverseMap();
             });
 
             return config.CreateMapper().Map<IEnumerable<Models.ViewModels.Task>, IEnumerable<Models.DataModels.Task>>(taskData);

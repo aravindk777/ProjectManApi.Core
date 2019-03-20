@@ -14,24 +14,13 @@ namespace PM.UnitTests.Logic
     {
         #region SETUP
         private Mock<IProjectRepo> mockProjectRepository;
-        private Mock<ICommonLogic> mockCommonRepository;
         private IProjectLogic projectLogicTest;
         #endregion
 
         public ProjectLogicUnitTests()
         {
             mockProjectRepository = new Mock<IProjectRepo>();
-            mockCommonRepository = new Mock<ICommonLogic>();
             projectLogicTest = new ProjectLogic(mockProjectRepository.Object);
-        }
-
-        void Test_For_GetCount()
-        {
-            // Arrange
-            mockProjectRepository.Setup(repo => repo.Count()).Returns(10);
-
-            // Act
-            //var actualResponse = projectLogicTest.
         }
 
         [Fact(DisplayName = "Test - CreateProject Logic")]
@@ -50,7 +39,7 @@ namespace PM.UnitTests.Logic
             Assert.Equal(newProjectViewModel.ProjectName, actualResponse.ProjectName);
         }
 
-        [Fact(DisplayName ="Test - Get All Projects")]
+        [Fact(DisplayName = "Test - Get All Projects")]
         public void Test_For_GetAllProjects()
         {
             // Arrange
@@ -96,7 +85,12 @@ namespace PM.UnitTests.Logic
         {
             // Arrange
             var projectToUpdate = new Models.ViewModels.Project() { ProjectId = projectIdToUpdate, ProjectName = "TestProject-10", ManagerId = Guid.NewGuid(), ManagerName = "TestUser5", Priority = 10 };
-            mockProjectRepository.Setup(repo => repo.GetById(projectIdToUpdate)).Returns(projectToUpdate.AsDataModel());
+            Models.DataModels.Project projectDMObject;
+            if (expectedResult)
+                projectDMObject = projectToUpdate.AsDataModel();
+            else
+                projectDMObject = null;
+            mockProjectRepository.Setup(repo => repo.GetById(projectIdToUpdate)).Returns(projectDMObject);
             mockProjectRepository.Setup(repo => repo.Update(It.IsAny<Models.DataModels.Project>())).Returns(expectedResult);
 
             // Act
@@ -140,6 +134,67 @@ namespace PM.UnitTests.Logic
 
             // Assert
             Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Fact(DisplayName = "Test - Get Count for Projects")]
+        public void Test_For_GetCount_Projects()
+        {
+            // Arrange
+            int expectedCount = 10;
+            mockProjectRepository.Setup(repo => repo.Count()).Returns(expectedCount);
+            // Act
+            var actualCount = projectLogicTest.Count();
+            // Assert
+            Assert.Equal(expectedCount, actualCount);
+        }
+
+        [Fact(DisplayName = "Test for Get User Projects")]
+        public void Test_For_Get_UserProjects()
+        {
+            // Arrange
+            var mgrId = Guid.NewGuid();
+            var testUserId = "TestUser1";
+            var projectsList = new Models.DataModels.Project[] {
+                new Models.DataModels.Project() {ProjectId = 1, ProjectName = "TestProject-1", ManagerId = mgrId, Priority = 10 },
+                new Models.DataModels.Project() {ProjectId = 2, ProjectName = "TestProject-2", ManagerId = mgrId, Priority = 5 },
+                new Models.DataModels.Project() {ProjectId = 3, ProjectName = "TestProject-3", ManagerId = mgrId, Priority = 15 },
+                new Models.DataModels.Project() {ProjectId = 4, ProjectName = "TestProject-4", ManagerId = mgrId, Priority = 20 },
+                new Models.DataModels.Project() {ProjectId = 5, ProjectName = "TestProject-5", ManagerId = mgrId, Priority = 30 },
+            };
+            mockProjectRepository.Setup(repo => repo.Search(It.IsAny<System.Linq.Expressions.Expression<Func<Models.DataModels.Project, bool>>>())).Returns(projectsList);
+            // Act
+            var actualResult = projectLogicTest.GetUserProjects(testUserId);
+            // Assert
+            Assert.NotNull(actualResult);
+            Assert.IsAssignableFrom<IEnumerable<Models.ViewModels.Project>>(actualResult);
+            Assert.Equal(projectsList.Count(), actualResult.Count());
+        }
+
+        [Theory(DisplayName = "Test for Search Projects")]
+        [InlineData("TestProject", false)]
+        [InlineData("Project", false)]
+        [InlineData("TestLastName", false)]
+        [InlineData("TestProject-2", true)]
+        public void Test_For_Search_Projects(string searchText, bool exactMatch)
+        {
+            // Arrange
+            var projectsList = new Models.ViewModels.Project[] {
+                new Models.ViewModels.Project() {ProjectId = 1, ProjectName = "TestProject-1", ManagerId = Guid.NewGuid(), Priority = 10 },
+                new Models.ViewModels.Project() {ProjectId = 2, ProjectName = "TestProject-2", ManagerId = Guid.NewGuid(), Priority = 5 },
+                new Models.ViewModels.Project() {ProjectId = 3, ProjectName = "TestProject-3", ManagerId = Guid.NewGuid(), Priority = 15 },
+                new Models.ViewModels.Project() {ProjectId = 4, ProjectName = "TestProject-4", ManagerId = Guid.NewGuid(), Priority = 20 },
+                new Models.ViewModels.Project() {ProjectId = 5, ProjectName = "TestProject-5", ManagerId = Guid.NewGuid(), Priority = 30 },
+            }.AsEnumerable();
+
+            if (exactMatch)
+                projectsList = projectsList.Where(p => p.ProjectName.Contains(searchText));
+
+            mockProjectRepository.Setup(repo => repo.Search(It.IsAny<System.Linq.Expressions.Expression<Func<Models.DataModels.Project, bool>>>())).Returns(projectsList.AsDataModel());
+            // Act
+            var actualResult = projectLogicTest.Search(searchText, exactMatch);
+            // Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(projectsList.Count(), actualResult.Count());
         }
     }
 }

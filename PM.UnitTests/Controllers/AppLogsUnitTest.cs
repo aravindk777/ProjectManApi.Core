@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using PM.Api.Controllers;
 using PM.Models.ViewModels;
+using System;
 using Xunit;
 
 namespace PM.UnitTests.Controllers
@@ -31,6 +33,7 @@ namespace PM.UnitTests.Controllers
 
             // Assert
             Assert.NotNull(actualData);
+            loggerInstance.Verify(x => x.Log(testLogInfo.LogType, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
             Assert.Equal(StatusCodes.Status200OK, actualData.StatusCode);
             Assert.True((bool)actualData.Value);
         }

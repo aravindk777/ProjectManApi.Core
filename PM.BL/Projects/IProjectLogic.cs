@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using PM.BL.Common;
+using System.Collections.Generic;
 
 namespace PM.BL.Projects
 {
-    public interface IProjectLogic
+    public interface IProjectLogic : ICommonLogic<Models.ViewModels.Project>
     {
         Models.ViewModels.Project CreateProject(Models.ViewModels.Project project);
         IEnumerable<Models.ViewModels.Project> GetAllProjects();

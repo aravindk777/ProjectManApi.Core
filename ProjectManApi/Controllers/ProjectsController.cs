@@ -120,7 +120,7 @@ namespace PM.Api.Controllers
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error during Ending a project for " + id);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error during Ending the Project. Please try again");
             }
         }
 

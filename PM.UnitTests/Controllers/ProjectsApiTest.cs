@@ -375,5 +375,44 @@ namespace PM.UnitTests.Controllers
             Assert.Equal(expectedErrMsg, actualResultData.Value);
         }
         #endregion
+
+        #region End a Project
+        [Theory(DisplayName = "Test for Ending a Project returns Ok")]
+        [InlineData(20, true)]
+        [InlineData(200, false)]
+        
+        public void Test_For_End_Project_Valid(int projectIdToEnd, bool expectedResult)
+        {
+            // Arrange
+            var expectedTestResult = new OkObjectResult(expectedResult);
+            mockProjectsLogic.Setup(api => api.EndProject(projectIdToEnd)).Returns(expectedResult);
+
+            // Act
+            var actualResult = mockController.EndProject(projectIdToEnd);
+            var actualProjData = ((OkObjectResult)actualResult).Value;
+
+            // Assert
+            Assert.IsType<OkObjectResult>(actualResult);
+            Assert.Equal(expectedResult, (bool)actualProjData);
+        }
+
+        [Fact(DisplayName = "Test for Ending a Project throws Exception")]
+        public void Test_For_End_Project_For_Exception()
+        {
+            // Arrange
+            var projectIdToEnd = 300;
+            var expectedErrMsg = "Error during Ending the Project. Please try again";
+            mockProjectsLogic.Setup(api => api.EndProject(projectIdToEnd)).Throws(new Exception(expectedErrMsg));
+
+            // Act
+            var actualResult = mockController.EndProject(projectIdToEnd);
+            var actualData = ((ObjectResult)actualResult);
+
+            // Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(StatusCodes.Status500InternalServerError, actualData.StatusCode);
+            Assert.Equal(actualData.Value, expectedErrMsg);
+        }
+        #endregion
     }
 }

@@ -214,7 +214,7 @@ namespace PM.UnitTests.Controllers
         {
             // Arrange
             int index = 1;
-            var expectedErrMsg = "Db connection failure test";
+            var expectedErrMsg = "Unable to find user. Please try again";
             mockUserLogic.Setup(u => u.GetUserById(mockUsersList[index].UserId)).Throws(new System.Exception(expectedErrMsg));
 
             // Act

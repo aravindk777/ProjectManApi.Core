@@ -99,8 +99,8 @@ namespace PM.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when trying to GET User by {id}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError(ex, $"Error when trying to GET User by Id: {id}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Unable to find user. Please try again");
             }
         }
 

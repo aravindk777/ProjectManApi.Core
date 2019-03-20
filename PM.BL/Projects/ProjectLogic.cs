@@ -2,10 +2,11 @@
 using PM.Data.Repos.Projects;
 using PM.Models.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PM.BL.Projects
 {
-    public class ProjectLogic : IProjectLogic, ICommonLogic
+    public class ProjectLogic : IProjectLogic
     {
         private readonly IProjectRepo _projectRepo;
 
@@ -67,6 +68,16 @@ namespace PM.BL.Projects
                 return _projectRepo.Delete(projectToDelete);
             else
                 return false;
+        }
+
+        public IEnumerable<Project> Search(string keyword, bool exactMatch = false, string fieldType = "")
+        {
+            var resultSet = _projectRepo.Search(p => exactMatch ? p.ProjectName.ToLower().Equals(keyword.ToLower()) : p.ProjectName.ToLower().Contains(keyword.ToLower()))
+                            .Union(_projectRepo.Search(p => exactMatch ? p.Manager.FirstName.ToLower().Equals(keyword.ToLower()) : p.Manager.FirstName.ToLower().Contains(keyword.ToLower())))
+                            .Union(_projectRepo.Search(p => exactMatch ? p.Manager.LastName.ToLower().Equals(keyword.ToLower()) : p.Manager.LastName.ToLower().Contains(keyword.ToLower())))
+                            .Union(_projectRepo.Search(p => exactMatch ? p.Manager.UserId.ToLower().Equals(keyword.ToLower()) : p.Manager.UserId.ToLower().Contains(keyword.ToLower())))
+                            .AsViewModel();
+            return resultSet;
         }
     }
 }

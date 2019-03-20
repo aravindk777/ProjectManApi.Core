@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace PM.BL.Common
 {
-    public interface ICommonLogic
+    public interface ICommonLogic<T> where T: class
     {
         int Count();
+        IEnumerable<T> Search(string keyword, bool exactMatch = false, string fieldType = "");
     }
 }

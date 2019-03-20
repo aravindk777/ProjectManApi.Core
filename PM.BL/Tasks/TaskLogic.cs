@@ -1,11 +1,13 @@
 ﻿using PM.BL.Common;
 using PM.Data.Repos.Tasks;
+using PM.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PM.BL.Tasks
 {
-    public class TaskLogic : ITaskLogic, ICommonLogic
+    public class TaskLogic : ITaskLogic
     {
         public readonly ITaskRepository taskRepository;
 
@@ -14,9 +16,9 @@ namespace PM.BL.Tasks
             taskRepository = _repository;
         }
 
-        #region EF REST operations
+        #region Task Repo operations
 
-        public Models.ViewModels.Task CreateTask(Models.ViewModels.Task task)
+        public Task CreateTask(Task task)
         {
             return taskRepository.Create(task.AsDataModel()).AsViewModel();
         }
@@ -30,18 +32,18 @@ namespace PM.BL.Tasks
                 return false;
         }
 
-        public Models.ViewModels.Task GetTask(int taskId)
+        public Task GetTask(int taskId)
         {
             var result = taskRepository.GetById(taskId).AsViewModel();
             return result;
         }
 
-        public IEnumerable<Models.ViewModels.Task> GetTasks()
+        public IEnumerable<Task> GetTasks()
         {
             return taskRepository.GetAll().AsViewModel();
         }
 
-        public bool UpdateTask(int taskId, Models.ViewModels.Task taskModel)
+        public bool UpdateTask(int taskId, Task taskModel)
         {
             if (taskRepository.GetById(taskId) != null && taskModel.TaskId == taskId)
                 return taskRepository.Update(taskModel.AsDataModel());
@@ -49,33 +51,46 @@ namespace PM.BL.Tasks
                 return false;
         }
 
-        #endregion
-
-        #region Search Repo methods
-        public IEnumerable<Models.ViewModels.Task> GetAllTasksForProject(int projectId)
-        {
-            return taskRepository.Search(t => t.ProjectId == projectId).AsViewModel();
-        }
-
-        public IEnumerable<Models.ViewModels.Task> GetAllTasksForUser(string userId)
-        {
-            return taskRepository.Search(t => t.TaskOwner.UserId == userId).AsViewModel();
-        }
-
-        public IEnumerable<Models.ViewModels.Task> GetUserProjectTasks(string userId, int projId)
-        {
-            return taskRepository.Search(t => t.TaskOwner.UserId == userId && t.ProjectId == projId).AsViewModel();
-        }
-
         public bool EndTask(int taskId)
         {
             return taskRepository.EndTask(taskId);
         }
-        #endregion
 
         public int Count()
         {
             return taskRepository.Count();
         }
+        #endregion
+
+        #region Search
+        public IEnumerable<Task> Search(string keyword, bool exactMatch = false, string fieldType = "")
+        {
+            var resultSet = taskRepository.Search(t => exactMatch ? t.TaskName.ToLower().Equals(keyword.ToLower()) : t.TaskName.ToLower().Contains(keyword.ToLower()))
+                            .Union(taskRepository.Search(t => exactMatch ? t.ParentTask.TaskName.ToLower().Equals(keyword.ToLower()) : t.ParentTask.TaskName.ToLower().Contains(keyword.ToLower())))
+                            .Union(taskRepository.Search(t => exactMatch ? t.Project.ProjectName.ToLower().Equals(keyword.ToLower()) : t.Project.ProjectName.ToLower().Contains(keyword.ToLower())))
+                            .Union(taskRepository.Search(t => exactMatch ? t.TaskOwner.FirstName.ToLower().Equals(keyword.ToLower()) : t.TaskOwner.FirstName.ToLower().Contains(keyword.ToLower())))
+                            .Union(taskRepository.Search(t => exactMatch ? t.TaskOwner.LastName.ToLower().Equals(keyword.ToLower()) : t.TaskOwner.LastName.ToLower().Contains(keyword.ToLower())))
+                            .Union(taskRepository.Search(t => exactMatch ? t.TaskOwner.UserId.ToLower().Equals(keyword.ToLower()) : t.TaskOwner.UserId.ToLower().Contains(keyword.ToLower())))
+                            .AsViewModel();
+            return resultSet;
+        }
+        #endregion
+
+        #region Get User and Project related Tasks
+        public IEnumerable<Task> GetAllTasksForProject(int projectId)
+        {
+            return taskRepository.Search(t => t.ProjectId == projectId).AsViewModel();
+        }
+
+        public IEnumerable<Task> GetAllTasksForUser(string userId)
+        {
+            return taskRepository.Search(t => t.TaskOwner.UserId == userId).AsViewModel();
+        }
+
+        public IEnumerable<Task> GetUserProjectTasks(string userId, int projId)
+        {
+            return taskRepository.Search(t => t.TaskOwner.UserId == userId && t.ProjectId == projId).AsViewModel();
+        }
+        #endregion
     }
 }

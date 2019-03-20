@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace PM.BL.Users
 {
-    public class UserLogic : IUserLogic, ICommonLogic
+    public class UserLogic : IUserLogic
     {
         private readonly IUserRepository userRepository;
 
@@ -47,7 +47,7 @@ namespace PM.BL.Users
         {
             var results = userRepository.GetAll();
             if (active)
-                results = results.Where(data => (!data.EndDate.HasValue || data.EndDate.Value.Equals(System.DateTime.MinValue)));
+                results = results.Where(data =>  (!data.EndDate.HasValue || data.EndDate.Value.Equals(System.DateTime.MinValue)));
             return results.AsViewModel();
         }
 

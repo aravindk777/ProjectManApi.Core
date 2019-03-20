@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using PM.BL.Common;
+using System.Collections.Generic;
 
 namespace PM.BL.Tasks
 {
-    public interface ITaskLogic
+    public interface ITaskLogic : ICommonLogic<Models.ViewModels.Task>
     {
         Models.ViewModels.Task CreateTask(Models.ViewModels.Task task);
         IEnumerable<Models.ViewModels.Task> GetTasks();
