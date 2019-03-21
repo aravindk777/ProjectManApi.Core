@@ -17,7 +17,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Users Controller
     /// </summary>
-    //[EnableCors]
+    [EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : Controller

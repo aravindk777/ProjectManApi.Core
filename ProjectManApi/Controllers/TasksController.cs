@@ -12,7 +12,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Tasks Controller
     /// </summary>
-    //[EnableCors]
+    [EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : Controller

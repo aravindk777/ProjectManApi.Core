@@ -10,7 +10,6 @@ namespace PM.Api
     /// </summary>
     public class Program
     {
-
         /// <summary>
         /// Main method for the .net core Api to start
         /// </summary>
