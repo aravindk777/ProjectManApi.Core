@@ -2,10 +2,11 @@
 using PM.Data.Repos.Projects;
 using PM.Models.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PM.BL.Projects
 {
-    public class ProjectLogic : IProjectLogic, ICommonLogic
+    public class ProjectLogic : IProjectLogic
     {
         private readonly IProjectRepo _projectRepo;
 
@@ -19,18 +20,29 @@ namespace PM.BL.Projects
             return _projectRepo.Count();
         }
 
-        public Project CreateProject(Models.ViewModels.Project project)
+        public Project CreateProject(Project project)
         {
             return _projectRepo.Create(project.AsDataModel()).AsViewModel();
         }
 
-        public IEnumerable<Models.ViewModels.Project> GetAllProjects()
+        public bool EndProject(int projId)
         {
-            return _projectRepo.GetAll().AsViewModel();
-            //.Select(item => item.AsViewModel());
+            var projectToEnd = _projectRepo.GetById(projId);
+            if (projectToEnd != null)
+            {
+                projectToEnd.ProjectEnd = System.DateTime.Today;
+                return _projectRepo.Update(projectToEnd);
+            }
+            else
+                return false;
         }
 
-        public Project GetProject(int projId = 0, string projectName = "")
+        public IEnumerable<Project> GetAllProjects()
+        {
+            return _projectRepo.GetAll().AsViewModel();
+        }
+
+        public Project GetProject(int projId)
         {
             return _projectRepo.GetById(projId).AsViewModel();
         }
@@ -38,9 +50,6 @@ namespace PM.BL.Projects
         public IEnumerable<Project> GetUserProjects(string userId)
         {
             var result = _projectRepo.Search(p => p.Manager.UserId == userId).AsViewModel();
-            //.Select(item => item.AsViewModel());
-            //var finaldata = result.AsViewModel();
-            //return _projectRepo.GetAll().Where(usr => usr.Manager.UserId == userId).AsViewModel();
             return result;
         }
 
@@ -54,7 +63,21 @@ namespace PM.BL.Projects
 
         public bool Remove(int projId)
         {
-            return _projectRepo.Delete(_projectRepo.GetById(projId));
+            var projectToDelete = _projectRepo.GetById(projId);
+            if (projectToDelete != null)
+                return _projectRepo.Delete(projectToDelete);
+            else
+                return false;
+        }
+
+        public IEnumerable<Project> Search(string keyword, bool exactMatch = false, string fieldType = "")
+        {
+            var resultSet = _projectRepo.Search(p => exactMatch ? p.ProjectName.ToLower().Equals(keyword.ToLower()) : p.ProjectName.ToLower().Contains(keyword.ToLower()))
+                            .Union(_projectRepo.Search(p => exactMatch ? p.Manager.FirstName.ToLower().Equals(keyword.ToLower()) : p.Manager.FirstName.ToLower().Contains(keyword.ToLower())))
+                            .Union(_projectRepo.Search(p => exactMatch ? p.Manager.LastName.ToLower().Equals(keyword.ToLower()) : p.Manager.LastName.ToLower().Contains(keyword.ToLower())))
+                            .Union(_projectRepo.Search(p => exactMatch ? p.Manager.UserId.ToLower().Equals(keyword.ToLower()) : p.Manager.UserId.ToLower().Contains(keyword.ToLower())))
+                            .AsViewModel();
+            return resultSet;
         }
     }
 }

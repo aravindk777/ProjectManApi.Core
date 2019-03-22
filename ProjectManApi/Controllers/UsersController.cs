@@ -17,7 +17,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Users Controller
     /// </summary>
-    //[EnableCors]
+    [EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : Controller
@@ -84,10 +84,10 @@ namespace PM.Api.Controllers
 
         // GET: api/Users/5
         /// <summary>
-        /// 
+        /// Get a specific user by UserId
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">User Id</param>
+        /// <returns>User data</returns>
         [HttpGet("{id}")]
         //[Route("api/users/{UserId:alpha}")]
         //[ActionName("GetById")]
@@ -99,17 +99,17 @@ namespace PM.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when trying to GET User by {id}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError(ex, $"Error when trying to GET User by Id: {id}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Unable to find user. Please try again");
             }
         }
 
         // POST: api/Users
         /// <summary>
-        /// 
+        /// Creates new User
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">User Information</param>
+        /// <returns>Created User result</returns>
         [HttpPost]
         public IActionResult Post([FromBody] User value)
         {
@@ -118,7 +118,7 @@ namespace PM.Api.Controllers
                 try
                 {
                     var result = _userOrchestrator.AddUser(value);
-                    return Ok(result);
+                    return Created(string.Concat("/", result.UserId), result);
                 }
                 catch (Exception ex)
                 {
@@ -129,17 +129,18 @@ namespace PM.Api.Controllers
             else
             {
                 _logger.LogWarning("Invalid/Incomplete User Information - {0}", value.Stringify());
-                return BadRequest("Invalid request information. Please verify the information entered.");
+                //return BadRequest("Invalid request information. Please verify the information entered.");
+                return BadRequest(ModelState);
             }
         }
 
         // PUT: api/Users/5
         /// <summary>
-        /// 
+        /// Updates User data
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="id">UserId</param>
+        /// <param name="value">New value</param>
+        /// <returns>boolean status</returns>
         [HttpPut]
         public IActionResult Put(string id, [FromBody]User value)
         {
@@ -162,7 +163,7 @@ namespace PM.Api.Controllers
             else
             {
                 _logger.LogWarning("Invalid input during Update for the User - {1}. Check the model state information - {0}", ModelState.Values.Stringify(), id);
-                return BadRequest("Invalid request information. Please verify the information entered.");
+                return BadRequest(ModelState);
             }
         }
 
@@ -225,11 +226,12 @@ namespace PM.Api.Controllers
 
         // GET: api/Users/{UserId}/Tasks
         /// <summary>
-        /// 
+        /// Returns all the tasks assigned to this user
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <returns></returns>
+        /// <param name="UserId">UserId</param>
+        /// <returns>List of Tasks</returns>
         [HttpGet("{UserId}/Tasks")]
+        [ProducesResponseType(StatusCodes.Status200OK, StatusCode = StatusCodes.Status200OK, Type = typeof(IEnumerable<Task>))]
         public IActionResult GetAllTasksForUser(string UserId)
         {
             try
@@ -245,11 +247,11 @@ namespace PM.Api.Controllers
 
         // GET: api/Users/{UserId}/Projects/{ProjectId}/Tasks
         /// <summary>
-        /// 
+        /// Returns all the task under the given project's Id for the specific user
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="projId"></param>
-        /// <returns></returns>
+        /// <param name="UserId">UserId</param>
+        /// <param name="projId">Project Id</param>
+        /// <returns>List of Tasks</returns>
         [HttpGet("{UserId}/Projects/{projId}/Tasks")]
         public IActionResult GetAllTasksForUserByProject(string UserId, int projId)
         {

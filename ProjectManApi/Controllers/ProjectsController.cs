@@ -14,7 +14,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Projects Controller
     /// </summary>
-    //[EnableCors]
+    [EnableCors]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectsController : Controller
@@ -91,8 +91,8 @@ namespace PM.Api.Controllers
                 try
                 {
                     var result = _projectOrhestrator.CreateProject(value);
-                    var createdUrl = string.Join("/", Request.Path, result.ProjectId);
-                    return Created(createdUrl, result);
+                    //var createdUrl = string.Join("/", Request.Path, result.ProjectId);
+                    return Created(string.Concat("/",result.ProjectId), result);
                 }
                 catch (Exception ex)
                 {
@@ -104,6 +104,23 @@ namespace PM.Api.Controllers
             {
                 logger.LogWarning("Invalid ModelState. See below for details.\nModelState: {0}\nData supplied:{1}", ModelState.Stringify(), value.Stringify());
                 return BadRequest(ModelState);
+            }
+        }
+
+        // POST to End a project
+        [HttpPost]
+        [Route("{id}/End")]
+        public IActionResult EndProject(int id)
+        {
+            try
+            {
+                var status = _projectOrhestrator.EndProject(id);
+                return Ok(status);
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "Error during Ending a project for " + id);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error during Ending the Project. Please try again");
             }
         }
 
@@ -160,6 +177,7 @@ namespace PM.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
         // GET: api/Projects/{ProjId}/Tasks
         /// <summary>

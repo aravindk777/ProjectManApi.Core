@@ -1,18 +1,16 @@
-﻿using System;
+﻿using PM.BL.Common;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PM.BL.Projects
 {
-    public interface IProjectLogic
+    public interface IProjectLogic : ICommonLogic<Models.ViewModels.Project>
     {
-        PM.Models.ViewModels.Project CreateProject(Models.ViewModels.Project project);
+        Models.ViewModels.Project CreateProject(Models.ViewModels.Project project);
         IEnumerable<Models.ViewModels.Project> GetAllProjects();
         bool Modify(int projId, Models.ViewModels.Project projectViewModel);
         bool Remove(int projId);
-        Models.ViewModels.Project GetProject(int projId = 0, string projectName = "");
+        Models.ViewModels.Project GetProject(int projId);
         IEnumerable<Models.ViewModels.Project> GetUserProjects(string userId);
+        bool EndProject(int projId);
     }
 }

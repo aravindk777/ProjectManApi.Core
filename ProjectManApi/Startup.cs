@@ -33,10 +33,18 @@ namespace PM.Api
         /// <summary>
         /// Constructor with DI
         /// </summary>
-        /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
+        /// <param name="configuration">Configuration</param>
+        /// <param name="environment">Environment</param>
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            Configuration = configuration;            
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            Configuration = builder;
+
         }
 
         /// <summary>
@@ -110,7 +118,7 @@ namespace PM.Api
                 .AddLogging(log =>
                 {
                     log.AddConsole();
-                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
+                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true, });
                     SetupLogging();
                 })
 
@@ -132,6 +140,8 @@ namespace PM.Api
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+            //loggerFactory.AddNLog(Configuration);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
