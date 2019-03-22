@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
@@ -54,7 +55,9 @@ namespace PM.Api
             services.AddCors(feature => {
                 feature.AddPolicy(
                     "ProjectManagerApiCors",
-                    policy => policy.AllowAnyHeader()
+                    builder => builder
+                                    .SetIsOriginAllowed((host) => true)
+                                    .AllowAnyHeader()
                                     .AllowAnyMethod()
                                     .AllowAnyOrigin()
                                     .AllowCredentials()
@@ -76,7 +79,8 @@ namespace PM.Api
 
             #region Enbale Mvc
             // Enable Mvc
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddMvcCore().AddApiExplorer();
             #endregion
 
@@ -120,36 +124,6 @@ namespace PM.Api
         }
 
         /// <summary>
-        /// Logging configuration
-        /// </summary>
-        void SetupLogging()
-        {
-            // Initialize the Logger
-            var nlogConfig = new LoggingConfiguration();
-
-            // Targets
-            var fileTarget = new FileTarget("FileTarget")
-            {
-                //ArchiveAboveSize = 1024 * 1024,
-                ArchiveEvery = FileArchivePeriod.Day,
-                CreateDirs = true,
-                FileName = @"c:\Logs\PMApi\PMApi.Core.log",
-                Layout = @"${date:format=yyyy-MM-dd-hh\:mm\:ss} ${level} ${message}  ${exception:format=tostring}    ${exception:format=stackTrace}    ${exception:format=InnerException}",
-                ArchiveNumbering = ArchiveNumberingMode.Date,
-                Header = NLog.Layouts.Layout.FromString("_________________________________"),
-                Footer = NLog.Layouts.Layout.FromString("=================================")
-            };
-            nlogConfig.AddTarget(fileTarget);
-            nlogConfig.AddRuleForAllLevels(fileTarget);
-
-            //configuration.AddTarget(fileTarget);
-            //configuration.AddRuleForAllLevels(fileTarget);
-
-            // Setup the configuration
-            NLog.LogManager.Configuration = nlogConfig;
-        }
-
-        /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app">app builder</param>
@@ -177,7 +151,38 @@ namespace PM.Api
                 c.RoutePrefix = string.Empty;
             });
             app.UseCors("ProjectManagerApiCors");
+            app.UseAuthentication();
             app.UseMvc();
+        }
+
+        /// <summary>
+        /// Logging configuration
+        /// </summary>
+        void SetupLogging()
+        {
+            // Initialize the Logger
+            var nlogConfig = new LoggingConfiguration();
+
+            // Targets
+            var fileTarget = new FileTarget("FileTarget")
+            {
+                //ArchiveAboveSize = 1024 * 1024,
+                ArchiveEvery = FileArchivePeriod.Day,
+                CreateDirs = true,
+                FileName = @"c:\Logs\PMApi\PMApi.Core.log",
+                Layout = @"${date:format=yyyy-MM-dd-hh\:mm\:ss} ${level} ${message}  ${exception:format=tostring}    ${exception:format=stackTrace}    ${exception:format=InnerException}",
+                ArchiveNumbering = ArchiveNumberingMode.Date,
+                Header = NLog.Layouts.Layout.FromString("_________________________________"),
+                Footer = NLog.Layouts.Layout.FromString("=================================")
+            };
+            nlogConfig.AddTarget(fileTarget);
+            nlogConfig.AddRuleForAllLevels(fileTarget);
+
+            //configuration.AddTarget(fileTarget);
+            //configuration.AddRuleForAllLevels(fileTarget);
+
+            // Setup the configuration
+            NLog.LogManager.Configuration = nlogConfig;
         }
     }
 }
