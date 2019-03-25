@@ -14,7 +14,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Projects Controller
     /// </summary>
-    [EnableCors]
+    [EnableCors("ProjectManagerApiCors")]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectsController : Controller
@@ -79,10 +79,10 @@ namespace PM.Api.Controllers
 
         // POST: api/Projects
         /// <summary>
-        /// 
+        /// Create a new project
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">New Project entity with information</param>
+        /// <returns>Created Project Value</returns>
         [HttpPost]
         public IActionResult Post([FromBody]Project value)
         {
@@ -108,6 +108,11 @@ namespace PM.Api.Controllers
         }
 
         // POST to End a project
+        /// <summary>
+        /// End a project
+        /// </summary>
+        /// <param name="id">Project Id</param>
+        /// <returns>boolean status of the request</returns>
         [HttpPost]
         [Route("{id}/End")]
         public IActionResult EndProject(int id)
@@ -126,11 +131,11 @@ namespace PM.Api.Controllers
 
         // PUT: api/Projects/5
         /// <summary>
-        /// 
+        /// Update a project
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="id">Project Id to update</param>
+        /// <param name="value">New values for the updating project entity</param>
+        /// <returns>boolean status of the update request</returns>
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Project value)
         {

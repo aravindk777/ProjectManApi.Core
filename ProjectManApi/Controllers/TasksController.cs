@@ -12,7 +12,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Tasks Controller
     /// </summary>
-    [EnableCors]
+    [EnableCors("ProjectManagerApiCors")]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : Controller
@@ -115,6 +115,9 @@ namespace PM.Api.Controllers
         [HttpPut]
         public IActionResult Put(int id, [FromBody]Task value)
         {
+            if (value.TaskId != id)
+                return BadRequest("Identifier doesnt match");
+
             if (ModelState.IsValid)
             {
                 try

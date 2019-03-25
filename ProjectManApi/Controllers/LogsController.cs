@@ -15,7 +15,7 @@ namespace PM.Api.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors]
+    [EnableCors("ProjectManagerApiCors")]
     public class LogsController : ControllerBase
     {
         private ILogger<LogsController> logger;

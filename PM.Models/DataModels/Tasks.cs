@@ -12,13 +12,14 @@ namespace PM.Models.DataModels
         public int TaskId { get; set; }
 
         [Required]
+        [MaxLength(50, ErrorMessage = "Task Name is required")]
         public string TaskName { get; set; }
 
         [Required]
         [Range(1, 30, ErrorMessage = "Invalid Priority value")]
         public int Priority { get; set; }
 
-        public DateTime StartDate { get; set; } = DateTime.Today;
+        public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
         public int ProjectId { get; set; }
