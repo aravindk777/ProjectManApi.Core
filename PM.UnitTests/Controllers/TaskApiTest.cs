@@ -57,7 +57,7 @@ namespace PM.UnitTests.Controllers
         public void Test_GetAll_Tasks()
         {
             // Arrange
-            mockTaskLogic.Setup(u => u.GetTasks()).Returns(mockTasksList);
+            mockTaskLogic.Setup(u => u.GetTasks(It.IsAny<bool>())).Returns(mockTasksList);
 
             // Act
             var result = mockController.Get();
@@ -75,7 +75,7 @@ namespace PM.UnitTests.Controllers
         {
             // Arrange
             var expectedErrMsg = "Test for Exception";
-            mockTaskLogic.Setup(u => u.GetTasks()).Throws(new Exception(expectedErrMsg));
+            mockTaskLogic.Setup(u => u.GetTasks(It.IsAny<bool>())).Throws(new Exception(expectedErrMsg));
 
             // Act
             var result = mockController.Get();

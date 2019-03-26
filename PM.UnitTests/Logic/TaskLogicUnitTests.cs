@@ -166,20 +166,20 @@ namespace PM.UnitTests.Logic
         }
 
         [Theory(DisplayName = "Test for Updating a Task")]
-        [InlineData(100, true, 100)]
-        [InlineData(200, false, 200)]
-        [InlineData(300, false, 200)]
-        public void Test_For_EditTask(int testTaskIdForEdit, bool expectedResult, int updatingTaskId)
+        [InlineData(100, true, true)]
+        [InlineData(200, true, false)]
+        [InlineData(300, false, false)]
+        public void Test_For_EditTask(int testTaskIdForEdit, bool expectedExistsResult, bool expectedUpdateResult)
         {
             // Arrange
             var userGuid = Guid.NewGuid();
             Models.DataModels.Task testTaskForEdit;
-            if (expectedResult || (testTaskIdForEdit == updatingTaskId))
+            if (expectedExistsResult || expectedUpdateResult)
             {
                 testTaskForEdit = new Models.DataModels.Task()
                 {
-                    TaskId = updatingTaskId,
-                    TaskName = "TestTask" + updatingTaskId,
+                    TaskId = testTaskIdForEdit,
+                    TaskName = "TestTask" + testTaskIdForEdit,
                     Priority = 20,
                     ProjectId = 100,
                     TaskOwnerId = userGuid,
@@ -190,12 +190,12 @@ namespace PM.UnitTests.Logic
             }
             else
                 testTaskForEdit = null;
-            mockTaskRepo.Setup(repo => repo.GetById(testTaskIdForEdit)).Returns(testTaskForEdit);
-            mockTaskRepo.Setup(repo => repo.Update(It.IsAny<Models.DataModels.Task>())).Returns(expectedResult);
+            mockTaskRepo.Setup(repo => repo.Exists(testTaskIdForEdit)).Returns(expectedExistsResult);
+            mockTaskRepo.Setup(repo => repo.Update(It.IsAny<Models.DataModels.Task>())).Returns(expectedUpdateResult);
             // Act
             var actualResult = tasksLogicTest.UpdateTask(testTaskIdForEdit, testTaskForEdit.AsViewModel());
             // Assert
-            Assert.Equal(expectedResult, actualResult);
+            Assert.Equal(expectedUpdateResult, actualResult);
         }
 
         [Theory(DisplayName = "Test for Delete Task")]

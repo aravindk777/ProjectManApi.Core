@@ -17,5 +17,10 @@ namespace PM.Data.Repos.Tasks
             taskToEnd.EndDate = DateTime.Now;
             return Update(taskToEnd);
         }
+
+        public bool Exists(object identifer)
+        {
+            return Context.Find<Task>(identifer) != null;
+        }
     }
 }

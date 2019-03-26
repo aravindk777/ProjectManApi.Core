@@ -12,7 +12,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Tasks Controller
     /// </summary>
-    [EnableCors]
+    [EnableCors("ProjectManagerApiCors")]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : Controller
@@ -37,11 +37,11 @@ namespace PM.Api.Controllers
         /// </summary>
         /// <returns>List of all Tasks</returns>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(bool activeOnly = false)
         {
             try
             {
-                return Ok(taskLogic.GetTasks());
+                return Ok(taskLogic.GetTasks(activeOnly));
             }
             catch (Exception ex)
             {
@@ -112,9 +112,12 @@ namespace PM.Api.Controllers
         /// <param name="id">task Id</param>
         /// <param name="value">New information</param>
         /// <returns>boolean status of the update</returns>
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]Task value)
         {
+            if (value.TaskId != id)
+                return BadRequest("Identifier doesnt match");
+
             if (ModelState.IsValid)
             {
                 try
@@ -160,7 +163,7 @@ namespace PM.Api.Controllers
         /// <param name="taskId">Task Id</param>
         /// <returns>Boolean status of the Task End request</returns>
         [HttpPost]
-        [Route("api/Tasks/{taskId}/End")]
+        [Route("{taskId}/End")]
         public IActionResult EndTask(int taskId)
         {
             try

@@ -6,7 +6,7 @@ namespace PM.BL.Tasks
     public interface ITaskLogic : ICommonLogic<Models.ViewModels.Task>
     {
         Models.ViewModels.Task CreateTask(Models.ViewModels.Task task);
-        IEnumerable<Models.ViewModels.Task> GetTasks();
+        IEnumerable<Models.ViewModels.Task> GetTasks(bool activeOnly = false);
         bool UpdateTask(int taskId, Models.ViewModels.Task taskModel);
         bool DeleteTask(int taskId);
         Models.ViewModels.Task GetTask(int taskId);

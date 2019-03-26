@@ -99,15 +99,15 @@ namespace PM.Api
 
             #region Dependency Injection
             // ---- Db connections ----
-            services.AddScoped<PMDbContext, PMDbContext>()
+            services.AddTransient<DbContext, PMDbContext>()
 
                 // ---- Repositories ----
-                .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<IRepository<User>, Repository<User>>()
-                .AddScoped<IProjectRepo, ProjectRepo>()
-                .AddScoped<IRepository<Project>, Repository<Project>>()
-                .AddScoped<ITaskRepository, TaskRepository>()
-                .AddScoped<IRepository<Task>, Repository<Task>>()
+                .AddTransient<IUserRepository, UserRepository>()
+                .AddTransient<IRepository<User>, Repository<User>>()
+                .AddTransient<IProjectRepo, ProjectRepo>()
+                .AddTransient<IRepository<Project>, Repository<Project>>()
+                .AddTransient<ITaskRepository, TaskRepository>()
+                .AddTransient<IRepository<Task>, Repository<Task>>()
 
                 // ---- Service Providers ----
                 .AddScoped<IUserLogic, UserLogic>()

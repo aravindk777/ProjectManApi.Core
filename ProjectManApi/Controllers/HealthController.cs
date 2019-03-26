@@ -11,7 +11,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Health check
     /// </summary>
-    [EnableCors]
+    [EnableCors("ProjectManagerApiCors")]
     [ApiController]
     [Route("api/[controller]")]
     public class HealthController : Controller
