@@ -136,7 +136,7 @@ namespace PM.Api.Controllers
         /// <param name="id">Project Id to update</param>
         /// <param name="value">New values for the updating project entity</param>
         /// <returns>boolean status of the update request</returns>
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]Project value)
         {
             if (ModelState.IsValid)
@@ -201,6 +201,26 @@ namespace PM.Api.Controllers
             {
                 logger.LogError(ex, $"Error during GET Tasks by ProjectId - {projectId}");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Search for Project by any text
+        /// </summary>
+        /// <param name="keyword">text to search</param>
+        /// <returns>Matching projects list entity</returns>
+        [HttpGet("Search")]
+        [ActionName("Search")]
+        public IActionResult Search(string keyword)
+        {
+            try
+            {
+                return Ok(_projectOrhestrator.Search(keyword));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error during Search by {keyword}.\nDetails:{ex.StackTrace}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error during Search by {keyword}.");
             }
         }
     }

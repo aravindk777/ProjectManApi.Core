@@ -114,6 +114,7 @@ namespace PM.BL.Common
                 .ForMember(vm => vm.ProjectName, dm => dm.MapFrom(m => m.Project != null ? m.Project.ProjectName : string.Empty))
                 .ForMember(vm => vm.ParentTaskName, dm => dm.MapFrom(m => m.ParentTask != null ? m.ParentTask.TaskName : string.Empty))
                 .ForMember(vm => vm.IsParent, dm => dm.MapFrom(m => m.ParentTask == null ? true: false))
+                .ForMember(vm => vm.IsActive, dm => dm.MapFrom(m => !(m.EndDate.HasValue && m.EndDate.Value.CompareTo(System.DateTime.Today) <= 0)))
                 .ReverseMap();
             });
 
@@ -128,6 +129,7 @@ namespace PM.BL.Common
                 .ForMember(vm => vm.ProjectName, dm => dm.MapFrom(m => m.Project != null ? m.Project.ProjectName : string.Empty))
                 .ForMember(vm => vm.ParentTaskName, dm => dm.MapFrom(m => m.ParentTask != null ? m.ParentTask.TaskName : string.Empty))
                 .ForMember(vm => vm.IsParent, dm => dm.MapFrom(m => m.ParentTask == null ? true : false))
+                .ForMember(vm => vm.IsActive, dm => dm.MapFrom(m => !(m.EndDate.HasValue && m.EndDate.Value.CompareTo(System.DateTime.Today) <= 0)))
                 .ReverseMap();
             });
 

@@ -38,9 +38,12 @@ namespace PM.BL.Tasks
             return result;
         }
 
-        public IEnumerable<Task> GetTasks()
+        public IEnumerable<Task> GetTasks(bool activeOnly = false)
         {
-            return taskRepository.GetAll().AsViewModel();
+            var tasks = taskRepository.GetAll().AsViewModel();
+            if (activeOnly)
+                return tasks.Where(t => t.IsActive);
+            return tasks;
         }
 
         public bool UpdateTask(int taskId, Task taskModel)
