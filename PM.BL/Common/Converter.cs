@@ -36,23 +36,29 @@ namespace PM.BL.Common
         #endregion
 
         #region View Model to Data Model
-        public static Models.DataModels.Project AsDataModel(this Models.ViewModels.Project projectData)
+        public static Models.DataModels.Project AsDataModel(this Models.ViewModels.Project projectData, Models.DataModels.Project projectDataModel = null)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Models.ViewModels.Project, Models.DataModels.Project>().ReverseMap();
+                cfg.CreateMap<Models.ViewModels.Project, Models.DataModels.Project>();
             });
-
-            return config.CreateMapper().Map<Models.ViewModels.Project, Models.DataModels.Project>(projectData);
+            if (projectDataModel == null)
+                projectDataModel = config.CreateMapper().Map<Models.ViewModels.Project, Models.DataModels.Project>(projectData);
+            else
+                projectDataModel = config.CreateMapper().Map(projectData, projectDataModel);
+            return projectDataModel;
         }
 
-        public static IEnumerable<Models.DataModels.Project> AsDataModel(this IEnumerable<Models.ViewModels.Project> projectData)
+        public static IEnumerable<Models.DataModels.Project> AsDataModel(this IEnumerable<Models.ViewModels.Project> projectData, IEnumerable<Models.DataModels.Project> projectDataModel = null)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Models.ViewModels.Project, Models.DataModels.Project>().ReverseMap();
+                cfg.CreateMap<Models.ViewModels.Project, Models.DataModels.Project>();
             });
 
-            return config.CreateMapper().Map<IEnumerable<Models.ViewModels.Project>, IEnumerable<Models.DataModels.Project>>(projectData);
-        }
+            if(projectDataModel == null)
+                return config.CreateMapper().Map<IEnumerable<Models.ViewModels.Project>, IEnumerable<Models.DataModels.Project>>(projectData);
+            else
+                return config.CreateMapper().Map(projectData, projectDataModel);
+        }        
         #endregion
         #endregion
 
@@ -80,27 +86,34 @@ namespace PM.BL.Common
             return mapper.Map<IEnumerable<Models.DataModels.User>, IEnumerable<Models.ViewModels.User>>(userData);
         }
 
-        public static Models.DataModels.User AsDataModel(this Models.ViewModels.User userData, bool isCreate = false)
+        public static Models.DataModels.User AsDataModel(this Models.ViewModels.User userData, bool isCreate = false, Models.DataModels.User dataModel = null)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Models.ViewModels.User, Models.DataModels.User>()
-                .ReverseMap();
+                cfg.CreateMap<Models.ViewModels.User, Models.DataModels.User>();
             });
+
             var mapper = config.CreateMapper();
             if (isCreate)
                 return mapper.Map<Models.ViewModels.User, Models.DataModels.User>(userData, 
                     opts => opts.ConfigureMap()
                             .ForMember(m => m.Created, d => d.AddTransform(v => System.DateTime.Now)));
-            return mapper.Map<Models.ViewModels.User, Models.DataModels.User>(userData);
+
+            if (dataModel != null)
+                return mapper.Map(userData, dataModel);
+            else
+                return mapper.Map<Models.DataModels.User>(userData);
         }
 
-        public static IEnumerable<Models.DataModels.User> AsDataModel(this IEnumerable<Models.ViewModels.User> userData)
+        public static IEnumerable<Models.DataModels.User> AsDataModel(this IEnumerable<Models.ViewModels.User> userData, IEnumerable<Models.DataModels.User> dataModel = null)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Models.ViewModels.User, Models.DataModels.User>().ReverseMap();
             });
 
-            return config.CreateMapper().Map<IEnumerable<Models.ViewModels.User>, IEnumerable<Models.DataModels.User>>(userData);
+            if (dataModel == null)
+                return config.CreateMapper().Map<IEnumerable<Models.ViewModels.User>, IEnumerable<Models.DataModels.User>>(userData);
+            else
+                return config.CreateMapper().Map(userData, dataModel);
         }
         #endregion
 
@@ -136,22 +149,27 @@ namespace PM.BL.Common
             return config.CreateMapper().Map<IEnumerable<Models.DataModels.Task>, IEnumerable<Models.ViewModels.Task>>(taskData);
         }
 
-        public static Models.DataModels.Task AsDataModel(this Models.ViewModels.Task taskData)
+        public static Models.DataModels.Task AsDataModel(this Models.ViewModels.Task taskData, Models.DataModels.Task dataModel = null)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Models.ViewModels.Task, Models.DataModels.Task>().ReverseMap();
             });
 
-            return config.CreateMapper().Map<Models.ViewModels.Task, Models.DataModels.Task>(taskData);
+            if (dataModel == null)
+                return config.CreateMapper().Map<Models.ViewModels.Task, Models.DataModels.Task>(taskData);
+            else
+                return config.CreateMapper().Map(taskData, dataModel);
         }
 
-        public static IEnumerable<Models.DataModels.Task> AsDataModel(this IEnumerable<Models.ViewModels.Task> taskData)
+        public static IEnumerable<Models.DataModels.Task> AsDataModel(this IEnumerable<Models.ViewModels.Task> taskData, IEnumerable<Models.DataModels.Task> dataModel = null)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Models.ViewModels.Task, Models.DataModels.Task>().ReverseMap();
             });
-
-            return config.CreateMapper().Map<IEnumerable<Models.ViewModels.Task>, IEnumerable<Models.DataModels.Task>>(taskData);
+            if (dataModel == null)
+                return config.CreateMapper().Map<IEnumerable<Models.ViewModels.Task>, IEnumerable<Models.DataModels.Task>>(taskData);
+            else
+                return config.CreateMapper().Map(taskData, dataModel);
         }
 
         #endregion

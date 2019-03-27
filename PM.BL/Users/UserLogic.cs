@@ -32,8 +32,9 @@ namespace PM.BL.Users
 
         public bool EditUser(string UserId, User userViewModel)
         {
-            if (userRepository.GetById(UserId) != null)
-                return userRepository.Update(userViewModel.AsDataModel());
+            var userEntity = userRepository.GetById(UserId);
+            if (userEntity != null)
+                return userRepository.Update(userViewModel.AsDataModel(isCreate: false, dataModel: userEntity));
             else
                 return false;
         }

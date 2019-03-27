@@ -48,8 +48,9 @@ namespace PM.BL.Tasks
 
         public bool UpdateTask(int taskId, Task taskModel)
         {
-            if (taskRepository.Exists(taskId))
-                return taskRepository.Update(taskModel.AsDataModel());
+            var taskEntity = taskRepository.GetById(taskId);
+            if (taskEntity != null)
+                return taskRepository.Update(taskModel.AsDataModel(taskEntity));
             else
                 return false;
         }
