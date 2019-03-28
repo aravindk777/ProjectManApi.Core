@@ -190,7 +190,7 @@ namespace PM.UnitTests.Logic
             }
             else
                 testTaskForEdit = null;
-            mockTaskRepo.Setup(repo => repo.Exists(testTaskIdForEdit)).Returns(expectedExistsResult);
+            mockTaskRepo.Setup(repo => repo.GetById(testTaskIdForEdit)).Returns(testTaskForEdit);
             mockTaskRepo.Setup(repo => repo.Update(It.IsAny<Models.DataModels.Task>())).Returns(expectedUpdateResult);
             // Act
             var actualResult = tasksLogicTest.UpdateTask(testTaskIdForEdit, testTaskForEdit.AsViewModel());
@@ -293,6 +293,63 @@ namespace PM.UnitTests.Logic
             // Assert
             Assert.NotNull(actualResult);
             Assert.Equal(testTasksList.Count(), actualResult.Count());
+        }
+
+        [Fact(DisplayName = "Test For Get Active Tasks")]
+        public void Test_For_Get_Active_Tasks()
+        {
+            // Arrange
+            var testTasksList = new Models.DataModels.Task[]
+                {
+                    new Models.DataModels.Task() { TaskName = "TestTask1", Priority = 20, ProjectId = 100, TaskOwnerId = Guid.NewGuid(), StartDate = DateTime.Today.AddDays(-5), ParentTaskId = null, EndDate = DateTime.Today},
+                    new Models.DataModels.Task() { TaskName = "TestTask2", Priority = 20, ProjectId = 200, TaskOwnerId = Guid.NewGuid(), StartDate = DateTime.Today.AddDays(-5), ParentTaskId = 100, EndDate = DateTime.Today.AddDays(-1)},
+                    new Models.DataModels.Task() { TaskName = "TestTask3", Priority = 20, ProjectId = 130, TaskOwnerId = Guid.NewGuid(), StartDate = DateTime.Today, ParentTaskId = null},
+                    new Models.DataModels.Task() { TaskName = "TestTask4", Priority = 20, ProjectId = 400, TaskOwnerId = Guid.NewGuid(), StartDate = DateTime.Today, ParentTaskId = 140},
+                    new Models.DataModels.Task() { TaskName = "TestTask5", Priority = 20, ProjectId = 160, TaskOwnerId = Guid.NewGuid(), StartDate = DateTime.Today, ParentTaskId = 100},
+                    new Models.DataModels.Task() { TaskName = "TestTask6", Priority = 20, ProjectId = 140, TaskOwnerId = Guid.NewGuid(), StartDate = DateTime.Today, ParentTaskId = null},
+                };
+            mockTaskRepo.Setup(repo => repo.GetAll()).Returns(testTasksList);
+            var expectedCount = testTasksList.AsViewModel().Count(t => t.IsActive);
+            // Act
+            var actualResult = tasksLogicTest.GetTasks(true);
+            // Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(expectedCount, actualResult.Count());
+        }
+        #endregion
+
+        #region Common - Converter Tests
+
+        [Fact(DisplayName = "Test for Model Converter - AsDataModel list")]
+        public void Test_For_Converting_AsDataModel_List()
+        {
+            // Arrange
+            var tasksList = new Models.ViewModels.Task[] {
+                new Models.ViewModels.Task() {ProjectId = 1, ProjectName = "TestProject-1", TaskOwnerId = Guid.NewGuid(), Priority = 10 , TaskId = 10, TaskName = "TestTask1"},
+                new Models.ViewModels.Task() {ProjectId = 2, ProjectName = "TestProject-2", TaskOwnerId = Guid.NewGuid(), Priority = 5 , TaskId = 11, TaskName = "TestTask2"},
+                new Models.ViewModels.Task() {ProjectId = 3, ProjectName = "TestProject-3", TaskOwnerId = Guid.NewGuid(), Priority = 15 , TaskId = 9, TaskName = "TestTask3"},
+                new Models.ViewModels.Task() {ProjectId = 4, ProjectName = "TestProject-4", TaskOwnerId = Guid.NewGuid(), Priority = 20 , TaskId = 7, TaskName = "TestTask4"},
+                new Models.ViewModels.Task() {ProjectId = 5, ProjectName = "TestProject-5", TaskOwnerId = Guid.NewGuid(), Priority = 30 , TaskId = 5, TaskName = "TestTask5", ParentTaskName = "TestParentTask1", ParentTaskId = 200},
+                new Models.ViewModels.Task() {ProjectId = 6, ProjectName = "TestProject-5", TaskOwnerId = Guid.NewGuid(), Priority = 30 , TaskId = 5, TaskName = "TestTask6", ParentTaskName = "TestParentTask1", ParentTaskId = 200},
+                new Models.ViewModels.Task() {ProjectId = 7, ProjectName = "TestProject-5", TaskOwnerId = Guid.NewGuid(), Priority = 30 , TaskId = 5, TaskName = "TestTask7", ParentTaskName = "TestParentTask2", ParentTaskId = 202},
+            }.AsEnumerable();
+
+            var testDataModelList = new Models.DataModels.Task[] {
+                new Models.DataModels.Task() {ProjectId = 1, Project =new Models.DataModels.Project() { ProjectName = "test-1", ProjectId = 1 }, TaskOwnerId = Guid.NewGuid(), Priority = 10 , TaskId = 10, TaskName = "As-Is-Task1"},
+                new Models.DataModels.Task() {ProjectId = 2, Project =new Models.DataModels.Project() { ProjectName = "test-2", ProjectId = 2 }, TaskOwnerId = Guid.NewGuid(), Priority = 5 , TaskId = 11, TaskName = "As-Is-Task2"},
+                new Models.DataModels.Task() {ProjectId = 3, Project =new Models.DataModels.Project() { ProjectName = "test-3", ProjectId = 3 }, TaskOwnerId = Guid.NewGuid(), Priority = 15 , TaskId = 9, TaskName = "As-Is-Task3"},
+                new Models.DataModels.Task() {ProjectId = 4, Project =new Models.DataModels.Project() { ProjectName = "test-4", ProjectId = 4 }, TaskOwnerId = Guid.NewGuid(), Priority = 20 , TaskId = 7, TaskName = "As-Is-Task4"},
+                new Models.DataModels.Task() {ProjectId = 5, Project =new Models.DataModels.Project() { ProjectName = "test-5", ProjectId = 5 }, TaskOwnerId = Guid.NewGuid(), Priority = 30 , TaskId = 5, TaskName = "As-Is-Task5", },
+                new Models.DataModels.Task() {ProjectId = 6, Project =new Models.DataModels.Project() { ProjectName = "test-6", ProjectId = 6 }, TaskOwnerId = Guid.NewGuid(), Priority = 30 , TaskId = 5, TaskName = "As-Is-Task6", },
+                new Models.DataModels.Task() {ProjectId = 7, Project =new Models.DataModels.Project() { ProjectName = "test-7", ProjectId = 7 }, TaskOwnerId = Guid.NewGuid(), Priority = 30 , TaskId = 5, TaskName = "As-Is-Task7", },
+            }.AsEnumerable();
+
+            // Act
+            var actualDataModelResult = tasksList.AsDataModel(testDataModelList);
+
+            // Assert
+            Assert.Equal(testDataModelList.Select(t => t.ProjectId), actualDataModelResult.Select(t => t.ProjectId));
+            Assert.Equal(tasksList.Select(t => t.TaskName), actualDataModelResult.Select(t => t.TaskName));
         }
         #endregion
     }

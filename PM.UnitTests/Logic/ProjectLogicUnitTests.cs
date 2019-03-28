@@ -196,5 +196,33 @@ namespace PM.UnitTests.Logic
             Assert.NotNull(actualResult);
             Assert.Equal(projectsList.Count(), actualResult.Count());
         }
+
+        [Fact(DisplayName = "Test for Model Converter - AsDataModel list")]
+        public void Test_For_Converting_AsDataModel_List()
+        {
+            // Arrange
+            var projectsList = new Models.ViewModels.Project[] {
+                new Models.ViewModels.Project() {ProjectId = 1, ProjectName = "TestProject-1", ManagerId = Guid.NewGuid(), Priority = 10 },
+                new Models.ViewModels.Project() {ProjectId = 2, ProjectName = "TestProject-2", ManagerId = Guid.NewGuid(), Priority = 5 },
+                new Models.ViewModels.Project() {ProjectId = 3, ProjectName = "TestProject-3", ManagerId = Guid.NewGuid(), Priority = 15 },
+                new Models.ViewModels.Project() {ProjectId = 4, ProjectName = "TestProject-4", ManagerId = Guid.NewGuid(), Priority = 20 },
+                new Models.ViewModels.Project() {ProjectId = 5, ProjectName = "TestProject-5", ManagerId = Guid.NewGuid(), Priority = 30 },
+            }.AsEnumerable();
+
+            var testDataModelList = new Models.DataModels.Project[] {
+                new Models.DataModels.Project() {ProjectId = 1, ProjectName = "As-Is-Project-1", ManagerId = Guid.NewGuid(), Priority = 1 },
+                new Models.DataModels.Project() {ProjectId = 2, ProjectName = "As-Is-Project-2", ManagerId = Guid.NewGuid(), Priority = 2 },
+                new Models.DataModels.Project() {ProjectId = 3, ProjectName = "As-Is-Project-3", ManagerId = Guid.NewGuid(), Priority = 3 },
+                new Models.DataModels.Project() {ProjectId = 4, ProjectName = "As-Is-Project-4", ManagerId = Guid.NewGuid(), Priority = 4 },
+                new Models.DataModels.Project() {ProjectId = 5, ProjectName = "As-Is-Project-5", ManagerId = Guid.NewGuid(), Priority = 5 },
+            }.AsEnumerable();
+
+            // Act
+            var actualDataModelResult = projectsList.AsDataModel(testDataModelList);
+
+            // Assert
+            Assert.Equal(projectsList.Select(t => t.ProjectName), actualDataModelResult.Select(t => t.ProjectName));
+            Assert.Equal(projectsList.Select(t => t.Priority), actualDataModelResult.Select(t => t.Priority));
+        }
     }
 }

@@ -14,8 +14,13 @@ namespace PM.Data.Repos.Tasks
         public bool EndTask(int taskId)
         {
             var taskToEnd = GetById(taskId);
-            taskToEnd.EndDate = DateTime.Now;
-            return Update(taskToEnd);
+            if (taskToEnd != null)
+            {
+                taskToEnd.EndDate = DateTime.Now;
+                return Update(taskToEnd);
+            }
+            else
+                return false;
         }
 
         public bool Exists(object identifer)

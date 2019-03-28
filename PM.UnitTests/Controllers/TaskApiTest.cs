@@ -340,6 +340,28 @@ namespace PM.UnitTests.Controllers
             Assert.Equal(expectedErrMsg, (actualModelState["TaskName"] as string[])[0]);
         }
 
+        [Fact(DisplayName = "Test for Update Task returns BadRequest result due to invalid taskId")]
+        //[TestCase(1, "", Description = "Updates existing Task", TestName = "Test for Update Task returns BadRequest result")]
+        public void Test_Put_Task_InValid_ByTaskId()
+        {
+            // Arrange
+            int index = 1;
+            string ProjNameToUpdate = string.Empty;
+            var projToUpdate = mockTasksList[index];
+            projToUpdate.TaskName = ProjNameToUpdate;
+            int testTaskIdToUpdate = 4;
+            var expectedErr = "Identifier doesnt match";
+
+            // Act
+            var actualResult = mockController.Put(testTaskIdToUpdate, projToUpdate);
+            var actualData = (BadRequestObjectResult)actualResult;
+
+            // Assert
+            Assert.NotNull(actualData);
+            Assert.Equal(StatusCodes.Status400BadRequest, actualData.StatusCode);
+            Assert.Equal(expectedErr, actualData.Value);
+        }
+
         [Fact(DisplayName = "Test for Update Task throws Exception")]
         //[TestCase(1, "Updated New Name", Description = "Updates existing Task", TestName = "Test for Update Task throws Exception")]
         public void Test_Put_Task_Throws_Exception()
