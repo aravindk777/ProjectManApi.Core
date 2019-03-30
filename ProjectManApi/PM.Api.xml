@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PM.Api</name>
+    </assembly>
+    <members>
+        <member name="T:PM.Api.Controllers.HealthController">
+            <summary>
+            Health check
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.HealthController.#ctor(PM.Data.Repos.Users.IUserRepository,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.HealthController})">
+            <summary>
+            
+            </summary>
+            <param name="_userRepo"></param>
+            <param name="logInstance"></param>
+        </member>
+        <member name="M:PM.Api.Controllers.HealthController.ServiceStatus">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.HealthController.DbStatus">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:PM.Api.Controllers.LogsController">
+            <summary>
+            Logging Controller for Angular UI to be used
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.LogsController.#ctor(Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.LogsController})">
+            <summary>
+            Injection contructor with Log instance
+            </summary>
+            <param name="logInstance"></param>
+        </member>
+        <member name="M:PM.Api.Controllers.LogsController.Log(PM.Models.ViewModels.AppLogs)">
+            <summary>
+            Log method to log any info from UI. This will be utilized from the Angular UI so have better logging than just console.log
+            </summary>
+            <param name="logInfo">Logging parameters</param>
+            <returns>true</returns>
+        </member>
+        <member name="T:PM.Api.Controllers.ProjectsController">
+            <summary>
+            Projects Controller
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.#ctor(PM.BL.Projects.IProjectLogic,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.ProjectsController},PM.BL.Tasks.ITaskLogic)">
+            <summary>
+            Injection constructor for Projects Controller
+            </summary>
+            <param name="projectOrhestrator"></param>
+            <param name="_logInstance"></param>
+            <param name="taskLogicInstance"></param>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Get">
+            <summary>
+            Get all Projects list
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Get(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Post(PM.Models.ViewModels.Project)">
+            <summary>
+            Create a new project
+            </summary>
+            <param name="value">New Project entity with information</param>
+            <returns>Created Project Value</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.EndProject(System.Int32)">
+            <summary>
+            End a project
+            </summary>
+            <param name="id">Project Id</param>
+            <returns>boolean status of the request</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Put(System.Int32,PM.Models.ViewModels.Project)">
+            <summary>
+            Update a project
+            </summary>
+            <param name="id">Project Id to update</param>
+            <param name="value">New values for the updating project entity</param>
+            <returns>boolean status of the update request</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Delete(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.GetAllTasksForProject(System.Int32)">
+            <summary>
+            Get all Tasks for project Id
+            </summary>
+            <param name="projectId">Project Id</param>
+            <returns>List of tasks under the project ID</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Search(System.String)">
+            <summary>
+            Search for Project by any text
+            </summary>
+            <param name="keyword">text to search</param>
+            <returns>Matching projects list entity</returns>
+        </member>
+        <member name="T:PM.Api.Controllers.TasksController">
+            <summary>
+            Tasks Controller
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.#ctor(PM.BL.Tasks.ITaskLogic,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.TasksController})">
+            <summary>
+            Injection Constructor
+            </summary>
+            <param name="_logic">task Logic layer instance</param>
+            <param name="logger">Logger instnace</param>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.Get(System.Boolean)">
+            <summary>
+            Get all Tasks
+            </summary>
+            <returns>List of all Tasks</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.Get(System.Int32)">
+            <summary>
+            Get a specific task details
+            </summary>
+            <param name="id">Task Id</param>
+            <returns>Task Entity</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.Post(PM.Models.ViewModels.Task)">
+            <summary>
+            Creates a new Task
+            </summary>
+            <param name="value">Task information</param>
+            <returns>Created Task information</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.Put(System.Int32,PM.Models.ViewModels.Task)">
+            <summary>
+            Update a selected task with new information
+            </summary>
+            <param name="id">task Id</param>
+            <param name="value">New information</param>
+            <returns>boolean status of the update</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.Delete(System.Int32)">
+            <summary>
+            Deletes a given task by the Task Id
+            </summary>
+            <param name="id">Task ID</param>
+            <returns>Boolean status of the delete request</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.TasksController.EndTask(System.Int32)">
+            <summary>
+            Ends a task by marking the Enddate as today
+            </summary>
+            <param name="taskId">Task Id</param>
+            <returns>Boolean status of the Task End request</returns>
+        </member>
+        <member name="T:PM.Api.Controllers.UsersController">
+            <summary>
+            Users Controller
+            </summary>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.#ctor(PM.BL.Users.IUserLogic,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.UsersController},PM.BL.Projects.IProjectLogic,PM.BL.Tasks.ITaskLogic)">
+            <summary>
+            Injection constructor
+            </summary>
+            <param name="_userlogicInstance">User Business layer instance</param>
+            <param name="logInstance">logger instance</param>
+            <param name="_projectLogicInstance">Project business layer</param>
+            <param name="_taskLogicInstance">Task Logic instance</param>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetAllUsers">
+            <summary>
+            GET: api/Users | Get All Users
+            </summary>
+            <returns>List of all users</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetActiveUsers">
+            <summary>
+            Get all Active Users
+            </summary>
+            <returns>List of Active Users</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.Get(System.String)">
+            <summary>
+            Get a specific user by UserId
+            </summary>
+            <param name="id">User Id</param>
+            <returns>User data</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.Post(PM.Models.ViewModels.User)">
+            <summary>
+            Creates new User
+            </summary>
+            <param name="value">User Information</param>
+            <returns>Created User result</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.Put(System.String,PM.Models.ViewModels.User)">
+            <summary>
+            Updates User data
+            </summary>
+            <param name="id">UserId</param>
+            <param name="value">New value</param>
+            <returns>boolean status</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.Delete(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.Search(System.String,System.Boolean,System.String)">
+            <summary>
+            Search for users with any keyword that may match their Firstname, Last name or User ID
+            </summary>
+            <param name="keyword"></param>
+            <param name="matchExact"></param>
+            <param name="fieldType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetUserProjects(System.String)">
+            <summary>
+            Returns list of projects associated to the manager by UserId
+            </summary>
+            <param name="userId">UserId of the manager</param>
+            <returns>List of Projects belonging to the User</returns>
+            <example>api/Users/user1/Projects</example>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetAllTasksForUser(System.String)">
+            <summary>
+            Returns all the tasks assigned to this user
+            </summary>
+            <param name="UserId">UserId</param>
+            <returns>List of Tasks</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.UsersController.GetAllTasksForUserByProject(System.String,System.Int32)">
+            <summary>
+            Returns all the task under the given project's Id for the specific user
+            </summary>
+            <param name="UserId">UserId</param>
+            <param name="projId">Project Id</param>
+            <returns>List of Tasks</returns>
+        </member>
+        <member name="T:PM.Api.Extensions.HelperExtns">
+            <summary>
+            Helper method to create JSON string from the object
+            </summary>
+        </member>
+        <member name="M:PM.Api.Extensions.HelperExtns.Stringify(System.Object)">
+            <summary>
+            Stringify method
+            </summary>
+            <param name="input">any object</param>
+            <returns>string</returns>
+        </member>
+        <member name="T:PM.Api.Program">
+            <summary>
+            Main Program console for the Web Api
+            </summary>
+        </member>
+        <member name="M:PM.Api.Program.Main(System.String[])">
+            <summary>
+            Main method for the .net core Api to start
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:PM.Api.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            Host builder method
+            </summary>
+            <param name="args">cmd args</param>
+            <returns>IWebHostBuilder</returns>
+        </member>
+        <member name="T:PM.Api.Startup">
+            <summary>
+            Startup object class
+            </summary>
+        </member>
+        <member name="M:PM.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            Constructor with DI
+            </summary>
+            <param name="configuration">Configuration</param>
+            <param name="environment">Environment</param>
+        </member>
+        <member name="P:PM.Api.Startup.Configuration">
+            <summary>
+            Configuration object
+            </summary>
+        </member>
+        <member name="M:PM.Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">Servicecollection object</param>
+        </member>
+        <member name="M:PM.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app">app builder</param>
+            <param name="env">environment configuration</param>
+            <param name="loggerFactory">logging</param>
+        </member>
+        <member name="M:PM.Api.Startup.SetupLogging">
+            <summary>
+            Logging configuration
+            </summary>
+        </member>
+    </members>
+</doc>

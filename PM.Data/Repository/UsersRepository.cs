@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PM.Data.Repository
 {
-    public class UsersRepository : GenericRepository<Users>, IUserRepository
+    public class UsersRepository : GenericRepository<User>, IUserRepository
     {
         //private readonly PMDbContext _usersDbContext;
         public UsersRepository(PMDbContext context) : base(dbContext: context)

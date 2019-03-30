@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PM.Data.Repository
 {
-    public interface ITasksRepository : IRepository<Tasks>
+    public interface ITasksRepository : IRepository<Task>
     {
     }
 }

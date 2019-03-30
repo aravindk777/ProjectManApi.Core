@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PM.Data.Repository
 {
-    public class TasksRepository : GenericRepository<Tasks>, ITasksRepository
+    public class TasksRepository : GenericRepository<Task>, ITasksRepository
     {
         public TasksRepository(PMDbContext context) : base(context)
         {
