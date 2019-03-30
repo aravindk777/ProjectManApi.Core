@@ -74,18 +74,25 @@
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Post(PM.Models.ViewModels.Project)">
             <summary>
-            
+            Create a new project
             </summary>
-            <param name="value"></param>
-            <returns></returns>
+            <param name="value">New Project entity with information</param>
+            <returns>Created Project Value</returns>
+        </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.EndProject(System.Int32)">
+            <summary>
+            End a project
+            </summary>
+            <param name="id">Project Id</param>
+            <returns>boolean status of the request</returns>
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Put(System.Int32,PM.Models.ViewModels.Project)">
             <summary>
-            
+            Update a project
             </summary>
-            <param name="id"></param>
-            <param name="value"></param>
-            <returns></returns>
+            <param name="id">Project Id to update</param>
+            <param name="value">New values for the updating project entity</param>
+            <returns>boolean status of the update request</returns>
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Delete(System.Int32)">
             <summary>
@@ -101,6 +108,13 @@
             <param name="projectId">Project Id</param>
             <returns>List of tasks under the project ID</returns>
         </member>
+        <member name="M:PM.Api.Controllers.ProjectsController.Search(System.String)">
+            <summary>
+            Search for Project by any text
+            </summary>
+            <param name="keyword">text to search</param>
+            <returns>Matching projects list entity</returns>
+        </member>
         <member name="T:PM.Api.Controllers.TasksController">
             <summary>
             Tasks Controller
@@ -113,7 +127,7 @@
             <param name="_logic">task Logic layer instance</param>
             <param name="logger">Logger instnace</param>
         </member>
-        <member name="M:PM.Api.Controllers.TasksController.Get">
+        <member name="M:PM.Api.Controllers.TasksController.Get(System.Boolean)">
             <summary>
             Get all Tasks
             </summary>
@@ -295,11 +309,6 @@
             </summary>
             <param name="services">Servicecollection object</param>
         </member>
-        <member name="M:PM.Api.Startup.SetupLogging">
-            <summary>
-            Logging configuration
-            </summary>
-        </member>
         <member name="M:PM.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
             This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -307,6 +316,11 @@
             <param name="app">app builder</param>
             <param name="env">environment configuration</param>
             <param name="loggerFactory">logging</param>
+        </member>
+        <member name="M:PM.Api.Startup.SetupLogging">
+            <summary>
+            Logging configuration
+            </summary>
         </member>
     </members>
 </doc>

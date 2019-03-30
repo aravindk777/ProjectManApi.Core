@@ -67,15 +67,12 @@ namespace PM.Data.Repos
         {
             try
             {
-                //Context.Set<T>().Attach(entity);
-                Context.Entry(entity).State = EntityState.Modified;
-
+                //context.Entry(entity).State = EntityState.Modified;
                 Context.Set<T>().Update(entity);
-                //Context.Entry(entity).CurrentValues.SetValues(entity);
                 return Context.SaveChanges() != 0;
             }
             catch (Exception)
-            {
+            {                
                 throw;
             }
         }

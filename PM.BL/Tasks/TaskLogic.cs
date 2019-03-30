@@ -38,15 +38,19 @@ namespace PM.BL.Tasks
             return result;
         }
 
-        public IEnumerable<Task> GetTasks()
+        public IEnumerable<Task> GetTasks(bool activeOnly = false)
         {
-            return taskRepository.GetAll().AsViewModel();
+            var tasks = taskRepository.GetAll().AsViewModel();
+            if (activeOnly)
+                return tasks.Where(t => t.IsActive);
+            return tasks;
         }
 
         public bool UpdateTask(int taskId, Task taskModel)
         {
-            if (taskRepository.GetById(taskId) != null && taskModel.TaskId == taskId)
-                return taskRepository.Update(taskModel.AsDataModel());
+            var taskEntity = taskRepository.GetById(taskId);
+            if (taskEntity != null)
+                return taskRepository.Update(taskModel.AsDataModel(taskEntity));
             else
                 return false;
         }

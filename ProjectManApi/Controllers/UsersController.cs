@@ -17,7 +17,7 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Users Controller
     /// </summary>
-    [EnableCors]
+    [EnableCors("ProjectManagerApiCors")]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : Controller
@@ -141,7 +141,7 @@ namespace PM.Api.Controllers
         /// <param name="id">UserId</param>
         /// <param name="value">New value</param>
         /// <returns>boolean status</returns>
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody]User value)
         {
             if (ModelState.IsValid)

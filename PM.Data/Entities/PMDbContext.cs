@@ -17,9 +17,9 @@ namespace PM.Data.Entities
             //Database.EnsureDeleted();
             Database.EnsureCreated();
             Projects.Include(m => m.Manager).Load();
-            Tasks.Include(p => p.Project).Load();
             Tasks.Include(t => t.ParentTask).Load();
             Tasks.Include(u => u.TaskOwner).Load();
+            Tasks.Include(p => p.Project).Load();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -43,8 +43,6 @@ namespace PM.Data.Entities
                 .WithMany(t => t.Tasks)
                 .HasForeignKey(fk => fk.TaskOwnerId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
-
-
         }
     }
 }

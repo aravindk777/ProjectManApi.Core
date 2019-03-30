@@ -57,7 +57,7 @@ namespace PM.UnitTests.Controllers
         public void Test_GetAll_Tasks()
         {
             // Arrange
-            mockTaskLogic.Setup(u => u.GetTasks()).Returns(mockTasksList);
+            mockTaskLogic.Setup(u => u.GetTasks(It.IsAny<bool>())).Returns(mockTasksList);
 
             // Act
             var result = mockController.Get();
@@ -75,7 +75,7 @@ namespace PM.UnitTests.Controllers
         {
             // Arrange
             var expectedErrMsg = "Test for Exception";
-            mockTaskLogic.Setup(u => u.GetTasks()).Throws(new Exception(expectedErrMsg));
+            mockTaskLogic.Setup(u => u.GetTasks(It.IsAny<bool>())).Throws(new Exception(expectedErrMsg));
 
             // Act
             var result = mockController.Get();
@@ -338,6 +338,28 @@ namespace PM.UnitTests.Controllers
             Assert.Contains("TaskName", actualModelState.Keys);
             Assert.Equal(StatusCodes.Status400BadRequest, actualData.StatusCode);
             Assert.Equal(expectedErrMsg, (actualModelState["TaskName"] as string[])[0]);
+        }
+
+        [Fact(DisplayName = "Test for Update Task returns BadRequest result due to invalid taskId")]
+        //[TestCase(1, "", Description = "Updates existing Task", TestName = "Test for Update Task returns BadRequest result")]
+        public void Test_Put_Task_InValid_ByTaskId()
+        {
+            // Arrange
+            int index = 1;
+            string ProjNameToUpdate = string.Empty;
+            var projToUpdate = mockTasksList[index];
+            projToUpdate.TaskName = ProjNameToUpdate;
+            int testTaskIdToUpdate = 4;
+            var expectedErr = "Identifier doesnt match";
+
+            // Act
+            var actualResult = mockController.Put(testTaskIdToUpdate, projToUpdate);
+            var actualData = (BadRequestObjectResult)actualResult;
+
+            // Assert
+            Assert.NotNull(actualData);
+            Assert.Equal(StatusCodes.Status400BadRequest, actualData.StatusCode);
+            Assert.Equal(expectedErr, actualData.Value);
         }
 
         [Fact(DisplayName = "Test for Update Task throws Exception")]

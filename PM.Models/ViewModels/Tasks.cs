@@ -27,5 +27,7 @@ namespace PM.Models.ViewModels
 
         public Guid TaskOwnerId { get; set; }
         public string OwnerFullName { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

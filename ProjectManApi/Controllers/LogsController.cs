@@ -13,10 +13,10 @@ namespace PM.Api.Controllers
     /// <summary>
     /// Logging Controller for Angular UI to be used
     /// </summary>
+    [EnableCors("ProjectManagerApiCors")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors]
-    public class LogsController : ControllerBase
+    public class LogsController : Controller
     {
         private ILogger<LogsController> logger;
 
@@ -38,8 +38,8 @@ namespace PM.Api.Controllers
         public IActionResult Log([FromBody] AppLogs logInfo)
         {
             string completeLogInfo = $"\n----------------------------------------------------------------------------------------\n" +
-                                     $"{logInfo.AppName}\t|\tModule:{logInfo.Module}\t|\tMethod:{logInfo.Method}\nMessage:{logInfo.Message}" +
-                                     ((!string.IsNullOrEmpty(logInfo.ErrorDetails)) ? $"\nError details:{logInfo.ErrorDetails}": string.Empty) + Environment.NewLine + 
+                                     $"{logInfo.AppName}\t|\tModule:{logInfo.Module}\t|\tMethod:{logInfo.Method}\nMessage:{logInfo.Message}\n" +
+                                     ((!string.IsNullOrEmpty(logInfo.ErrorDetails)) ? $"\nError details:{logInfo.ErrorDetails}": string.Empty) + Environment.NewLine +
                                      $"----------------------------------------------------------------------------------------\n";
             logger.Log(logInfo.LogType, message: completeLogInfo);
             return Ok(true);

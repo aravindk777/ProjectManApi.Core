@@ -166,7 +166,7 @@ namespace PM.UnitTests.Logic
             Assert.Equal(expectedCount, actualCount);
         }
 
-        [Fact(DisplayName = "Test for Converters AsDataModel List")]
+        [Fact(DisplayName = "Test for Converters User AsDataModel List")]
         public void Test_For_Converter_AsDataModelList()
         {
             // Arrange
@@ -184,6 +184,63 @@ namespace PM.UnitTests.Logic
             // Assert
             Assert.Equal(usersVMList.Count(), actualResultAsDataModel.Count());
             Assert.Equal(usersVMList.Select(vm => vm.Id), actualResultAsDataModel.Select(dm => dm.Id));
+        }
+
+        [Theory(DisplayName = "Test for Conversion from ViewModel to DataModel")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Test_For_Converter_FromViewModel_To_DataModel(bool passModelForConversion)
+        {
+            var expectedGuid = Guid.NewGuid();
+            var testUserViewModel = new Models.ViewModels.User() { UserId = "TestUser1", FirstName = "TestFirstName1", LastName = "TestLastName1", Id = expectedGuid };
+            var testUserDataModel = new Models.DataModels.User()
+            {
+                UserId = "AsIsUser1",
+                FirstName = "AsIsFirstName",
+                LastName = "AsIsLastName",
+                Created = DateTime.Today.AddDays(-1),
+                Id = Guid.NewGuid()
+            };
+
+            Models.DataModels.User actualResult;
+            if (passModelForConversion)
+                actualResult = testUserViewModel.AsDataModel(It.IsAny<bool>(), testUserDataModel);
+            else
+                actualResult = testUserViewModel.AsDataModel(It.IsAny<bool>());
+
+            Assert.Equal(expectedGuid, actualResult.Id);
+            Assert.Equal(testUserViewModel.FirstName, actualResult.FirstName);
+            Assert.Equal(testUserViewModel.LastName, actualResult.LastName);
+            Assert.Equal(testUserViewModel.UserId, actualResult.UserId);
+        }
+
+        [Fact(DisplayName = "Test for Model Converter - AsDataModel list")]
+        public void Test_For_Converting_AsDataModel_List()
+        {
+            // Arrange
+            var usersVMList = new Models.ViewModels.User[]
+            {
+                new Models.ViewModels.User() { UserId = "TestUser1", FirstName = "TestFirstName1", LastName = "TestLastName1", Id = Guid.NewGuid() },
+                new Models.ViewModels.User() { UserId = "TestUser2", FirstName = "TestFirstName2", LastName = "TestLastName2", Id = Guid.NewGuid() },
+                new Models.ViewModels.User() { UserId = "TestUser3", FirstName = "TestFirstName3", LastName = "TestLastName3", Id = Guid.NewGuid() },
+                new Models.ViewModels.User() { UserId = "TestUser4", FirstName = "TestFirstName4", LastName = "TestLastName4", Id = Guid.NewGuid() },
+                new Models.ViewModels.User() { UserId = "TestUser5", FirstName = "TestFirstName5", LastName = "TestLastName5", Id = Guid.NewGuid() },
+            }.AsEnumerable();
+
+            var testDataModelList = new Models.DataModels.User[] {
+                new Models.DataModels.User() { UserId = "As-Is-User1", FirstName = "As-Is-FirstName1", LastName = "As-Is-LastName1", Id = Guid.NewGuid() },
+                new Models.DataModels.User() { UserId = "As-Is-User2", FirstName = "As-Is-FirstName2", LastName = "As-Is-LastName2", Id = Guid.NewGuid() },
+                new Models.DataModels.User() { UserId = "As-Is-User3", FirstName = "As-Is-FirstName3", LastName = "As-Is-LastName3", Id = Guid.NewGuid() },
+                new Models.DataModels.User() { UserId = "As-Is-User4", FirstName = "As-Is-FirstName4", LastName = "As-Is-LastName4", Id = Guid.NewGuid() },
+                new Models.DataModels.User() { UserId = "As-Is-User5", FirstName = "As-Is-FirstName5", LastName = "As-Is-LastName5", Id = Guid.NewGuid() },
+            }.AsEnumerable();
+
+            // Act
+            var actualDataModelResult = usersVMList.AsDataModel(testDataModelList);
+
+            // Assert
+            Assert.Equal(usersVMList.Select(t => t.UserId), actualDataModelResult.Select(t => t.UserId));
+            Assert.Equal(usersVMList.Select(t => t.Id), actualDataModelResult.Select(t => t.Id));
         }
     }
 }

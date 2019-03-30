@@ -13,6 +13,7 @@ namespace PM.Models.DataModels
         public int ProjectId { get; set; }
 
         [Required]
+        [MaxLength(50, ErrorMessage = "Project Name is required")]
         public string ProjectName { get; set; }
 
         [Range(1, 30)]

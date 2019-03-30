@@ -414,5 +414,47 @@ namespace PM.UnitTests.Controllers
             Assert.Equal(actualData.Value, expectedErrMsg);
         }
         #endregion
+
+        #region SEARCH Projects
+        [Fact(DisplayName = "Test for Search a valid Project returns Ok result")]
+        //[TestCase("User1First", Description = "Search User", TestName = "Test for Search a valid User returns Ok result")]
+        public void Test_Search_Project_Valid()
+        {
+            // Arrange
+            string testSearchKeyword = "TestProject";
+            var validSearchResult = mockProjectsList.Where(p => p.ProjectName.ToLower().Contains(testSearchKeyword.ToLower()));
+            var expectedTestResult = new OkObjectResult(validSearchResult);
+            mockProjectsLogic.Setup(api => api.Search(testSearchKeyword, It.IsAny<bool>(), It.IsAny<string>())).Returns(validSearchResult);
+
+            // Act
+            var actualResult = mockController.Search(testSearchKeyword);
+            var actualUserData = (OkObjectResult)actualResult;
+
+            // Assert
+            Assert.NotNull(actualUserData);
+            Assert.Equal(StatusCodes.Status200OK, actualUserData.StatusCode);
+            Assert.Equal(validSearchResult.Count(), (actualUserData.Value as IEnumerable<Models.ViewModels.Project>).Count());
+        }
+
+        [Fact(DisplayName = "Test for Search Project throws Exception")]
+        //[TestCase("User1First", Description = "Search User", TestName = "Test for Search User throws Exception")]
+        public void Test_Search_User_For_Exception()
+        {
+            // Arrange
+            string testSearchKeyword = "TestProject";
+            var searchResult = mockProjectsList.Any(p => p.ProjectName.Contains(testSearchKeyword));
+            var expectedErrMsg = $"Error during Search by {testSearchKeyword}.";
+            mockProjectsLogic.Setup(api => api.Search(testSearchKeyword, It.IsAny<bool>(), It.IsAny<string>())).Throws(new Exception(expectedErrMsg));
+
+            // Act
+            var actualResult = mockController.Search(testSearchKeyword);
+            var actualUserData = (ObjectResult)actualResult;
+
+            // Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(StatusCodes.Status500InternalServerError, actualUserData.StatusCode);
+            Assert.Equal(expectedErrMsg, actualUserData.Value);
+        }
+        #endregion  
     }
 }

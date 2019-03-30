@@ -55,8 +55,12 @@ namespace PM.BL.Projects
 
         public bool Modify(int projId, Project projectViewModel)
         {
-            if (_projectRepo.GetById(projId) != null)
-                return _projectRepo.Update(projectViewModel.AsDataModel());
+            var dataModelEntity = _projectRepo.GetById(projId);
+            if (dataModelEntity != null)
+            {
+                var updatedModel = projectViewModel.AsDataModel(dataModelEntity);
+                return _projectRepo.Update(updatedModel);
+            }
             else
                 return false;
         }
