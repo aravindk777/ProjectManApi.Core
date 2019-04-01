@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Internal;
+using Microsoft.Extensions.Options;
 using Moq;
 using PM.Api.Controllers;
+using PM.Models.Config;
 using PM.Models.ViewModels;
 using System;
 using Xunit;
@@ -13,12 +15,13 @@ namespace PM.UnitTests.Controllers
     public class AppLogsUnitTest
     {
         private Mock<ILogger<LogsController>> loggerInstance;
+        private Mock<IOptions<ApplicationSettings>> mockSettings;
         private LogsController mockController;
 
         public AppLogsUnitTest()
         {
             loggerInstance = new Mock<ILogger<LogsController>>();
-            mockController = new LogsController(loggerInstance.Object);
+            mockController = new LogsController(loggerInstance.Object, mockSettings.Object);
         }
 
         [Fact(DisplayName = "Test for Posting app logs returns Ok result")]
