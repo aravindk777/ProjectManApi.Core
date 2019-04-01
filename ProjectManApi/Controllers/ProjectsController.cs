@@ -40,7 +40,7 @@ namespace PM.Api.Controllers
         /// <summary>
         /// Get all Projects list
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of all Project View Model entities</returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -59,10 +59,10 @@ namespace PM.Api.Controllers
 
         // GET: api/Projects/5
         /// <summary>
-        /// 
+        /// Get a project entity information by the Project Id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Project Id to fetch</param>
+        /// <returns>Project View Model entity</returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -164,11 +164,11 @@ namespace PM.Api.Controllers
 
         // DELETE: api/Projects/5
         /// <summary>
-        /// 
+        /// Delete a project by the Project Id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
+        /// <param name="id">Project Id to delete</param>
+        /// <returns>boolean status of the request</returns>
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             try
