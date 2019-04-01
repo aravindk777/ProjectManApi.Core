@@ -5,6 +5,7 @@ using Moq;
 using PM.Api.Controllers;
 using PM.Data.Repos.Users;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace PM.UnitTests.Controllers
@@ -56,8 +57,7 @@ namespace PM.UnitTests.Controllers
         {
             // Arrange
             int expectedCount = 5;
-            var testData = new Models.DataModels.User[expectedCount];
-            mockUserRepo.Setup(d => d.GetAll()).Returns(testData);
+            mockUserRepo.Setup(d => d.Count ()).Returns(expectedCount);
             // Act
             var actualResultType = testHlthCtrler.DbStatus();           
             var actualResultCount = ((OkObjectResult)actualResultType).Value;
@@ -74,7 +74,7 @@ namespace PM.UnitTests.Controllers
         {
             // Arrange
             var expectedErrMsg = "Db health status failed";
-            mockUserRepo.Setup(u => u.GetAll()).Throws(new Exception(expectedErrMsg));
+            mockUserRepo.Setup(u => u.Count()).Throws(new Exception(expectedErrMsg));
 
             // Act
             var result = testHlthCtrler.DbStatus();

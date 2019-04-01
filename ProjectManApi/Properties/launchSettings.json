@@ -3,7 +3,7 @@
     "windowsAuthentication": true,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost/ProjectManApi",
+      "applicationUrl": "http://localhost:9001",
       "sslPort": 0
     },
     "iisExpress": {
@@ -37,6 +37,12 @@
         "ASPNETCORE_ENVIRONMENT": "Production"
       },
       "use64Bit": true
+    },
+    "IIS-Dev": {
+      "commandName": "IIS",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "QA"
+      }
     }
   }
 }
