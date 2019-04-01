@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +21,7 @@ using PM.Data.Repos;
 using PM.Data.Repos.Projects;
 using PM.Data.Repos.Tasks;
 using PM.Data.Repos.Users;
+using PM.Models.Config;
 using PM.Models.DataModels;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -33,17 +35,18 @@ namespace PM.Api
         /// <summary>
         /// Constructor with DI
         /// </summary>
-        /// <param name="configuration">Configuration</param>
+        /// <param name="_configuration">Configuration</param>
         /// <param name="environment">Environment</param>
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration _configuration, IHostingEnvironment environment)
         {
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables()
-                .Build();
+            //var builder = new ConfigurationBuilder()
+            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            //    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+            //    .AddEnvironmentVariables()
+            //    .Build();
 
-            Configuration = builder;
+            //Configuration = builder;
+            Configuration = _configuration;
 
         }
 
@@ -92,43 +95,49 @@ namespace PM.Api
             services.AddMvcCore().AddApiExplorer();
             #endregion
 
-            #region DB context instantiation
-            // Setup DB connection
-            services.AddDbContext<PMDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PMDb")));
-            #endregion  
-
             #region Dependency Injection
+
+            // ---- Bind the Configuration to the AppSettings File
+            services.Configure<ApplicationSettings>(options => Configuration.Bind(options));
+
             // ---- Db connections ----
             services.AddTransient<DbContext, PMDbContext>()
 
-                // ---- Repositories ----
-                .AddTransient<IUserRepository, UserRepository>()
-                .AddTransient<IRepository<User>, Repository<User>>()
-                .AddTransient<IProjectRepo, ProjectRepo>()
-                .AddTransient<IRepository<Project>, Repository<Project>>()
-                .AddTransient<ITaskRepository, TaskRepository>()
-                .AddTransient<IRepository<Task>, Repository<Task>>()
+            // ---- Repositories ----
+            .AddTransient<IUserRepository, UserRepository>()
+            .AddTransient<IRepository<User>, Repository<User>>()
+            .AddTransient<IProjectRepo, ProjectRepo>()
+            .AddTransient<IRepository<Project>, Repository<Project>>()
+            .AddTransient<ITaskRepository, TaskRepository>()
+            .AddTransient<IRepository<Task>, Repository<Task>>()
 
-                // ---- Service Providers ----
-                .AddScoped<IUserLogic, UserLogic>()
-                .AddScoped<IProjectLogic, ProjectLogic>()
-                .AddScoped<ITaskLogic, TaskLogic>()
+            // ---- Service Providers ----
+            .AddScoped<IUserLogic, UserLogic>()
+            .AddScoped<IProjectLogic, ProjectLogic>()
+            .AddScoped<ITaskLogic, TaskLogic>()
 
-                // ---- Logging ----
-                .AddLogging(log =>
-                {
-                    log.AddConsole();
-                    log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true, });
-                    SetupLogging();
-                })
+            // ---- Logging ----
+            .AddLogging(log =>
+            {
+                log.AddConsole();
+                log.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true, });
+                var appConfig = Configuration.Get<ApplicationSettings>();
+                SetupLogging(appConfig);
+            })
 
-                // ---- API Controllers ----
-                .AddScoped<UsersController, UsersController>()
-                .AddScoped<ProjectsController, ProjectsController>()
-                .AddScoped<HealthController, HealthController>()
-                .AddScoped<LogsController, LogsController>()
-                .AddScoped<TasksController, TasksController>();
+            // ---- API Controllers ----
+            .AddScoped<UsersController, UsersController>()
+            .AddScoped<ProjectsController, ProjectsController>()
+            .AddScoped<HealthController, HealthController>()
+            .AddScoped<LogsController, LogsController>()
+            .AddScoped<TasksController, TasksController>();
             #endregion
+
+            #region DB context instantiation
+            // Setup DB connection
+            var dbConnString = Configuration.GetConnectionString("PMDb");
+            services.AddDbContext<PMDbContext>(options => options.UseSqlServer(dbConnString));
+            #endregion  
         }
 
         /// <summary>
@@ -168,28 +177,28 @@ namespace PM.Api
         /// <summary>
         /// Logging configuration
         /// </summary>
-        void SetupLogging()
+        void SetupLogging(ApplicationSettings applicationSettings)
         {
             // Initialize the Logger
             var nlogConfig = new LoggingConfiguration();
 
-            // Targets
-            var fileTarget = new FileTarget("FileTarget")
-            {
-                //ArchiveAboveSize = 1024 * 1024,
-                ArchiveEvery = FileArchivePeriod.Day,
-                CreateDirs = true,
-                FileName = @"c:\Logs\PMApi\PMApi.Core.log",
-                Layout = @"${date:format=yyyy-MM-dd-hh\:mm\:ss} ${level} ${message}  ${exception:format=tostring}    ${exception:format=stackTrace}    ${exception:format=InnerException}",
-                ArchiveNumbering = ArchiveNumberingMode.Date,
-                Header = NLog.Layouts.Layout.FromString("_________________________________"),
-                Footer = NLog.Layouts.Layout.FromString("=================================")
-            };
-            nlogConfig.AddTarget(fileTarget);
-            nlogConfig.AddRuleForAllLevels(fileTarget);
-
-            //configuration.AddTarget(fileTarget);
-            //configuration.AddRuleForAllLevels(fileTarget);
+            applicationSettings.LogSettings.ToList()
+                .ForEach(setting =>
+                {
+                    // Targets
+                    var fileTarget = new FileTarget(setting.LoggerName)
+                    {
+                        ArchiveEvery = FileArchivePeriod.Day,
+                        CreateDirs = true,
+                        FileName = setting.LogFile,
+                        Layout = setting.LogLayout,
+                        ArchiveNumbering = ArchiveNumberingMode.Date,
+                        Header = NLog.Layouts.Layout.FromString("_________________________________"),
+                        Footer = NLog.Layouts.Layout.FromString("=================================")
+                    };
+                    nlogConfig.AddTarget(fileTarget);
+                    nlogConfig.AddRuleForAllLevels(fileTarget);
+                });
 
             // Setup the configuration
             NLog.LogManager.Configuration = nlogConfig;

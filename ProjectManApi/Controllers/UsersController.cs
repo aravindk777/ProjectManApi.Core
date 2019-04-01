@@ -89,8 +89,6 @@ namespace PM.Api.Controllers
         /// <param name="id">User Id</param>
         /// <returns>User data</returns>
         [HttpGet("{id}")]
-        //[Route("api/users/{UserId:alpha}")]
-        //[ActionName("GetById")]
         public IActionResult Get(string id)
         {
             try
@@ -169,11 +167,12 @@ namespace PM.Api.Controllers
 
         // DELETE: api/Users/5
         /// <summary>
-        /// 
+        /// Deletes an user by UserId which would mark the user as inactive
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
+        /// <param name="id">Userid</param>
+        /// <returns>boolean status of the delete request'
+        /// </returns>
+        [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
             try

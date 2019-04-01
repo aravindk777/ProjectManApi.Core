@@ -20,10 +20,10 @@ namespace PM.Api.Controllers
         private readonly ILogger<HealthController> _logger;
 
         /// <summary>
-        /// 
+        /// Injection constructor
         /// </summary>
-        /// <param name="_userRepo"></param>
-        /// <param name="logInstance"></param>
+        /// <param name="_userRepo">User repository instance</param>
+        /// <param name="logInstance">logger instance</param>
         public HealthController(IUserRepository _userRepo, ILogger<HealthController> logInstance)
         {
             userRepo = _userRepo;
@@ -31,9 +31,9 @@ namespace PM.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Check the Service availability. 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Would return true if the service is available/reachable to respond</returns>
         [HttpGet("[action]")]
         [ActionName("Service")]
         public IActionResult ServiceStatus()
@@ -42,16 +42,16 @@ namespace PM.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Check Db status
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Count of Users Entity object from Database directly</returns>
         [HttpGet("[action]")]
         [ActionName("Db")]
         public IActionResult DbStatus()
         {
             try
             {
-                return Ok(userRepo.GetAll().Count());
+                return Ok(userRepo.Count());
             }
             catch (Exception ex)
             {

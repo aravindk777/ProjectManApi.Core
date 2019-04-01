@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PM.Models.Config;
 using PM.Models.ViewModels;
 
 namespace PM.Api.Controllers
@@ -19,14 +17,17 @@ namespace PM.Api.Controllers
     public class LogsController : Controller
     {
         private ILogger<LogsController> logger;
+        private IOptions<ApplicationSettings> configSettings;
 
         /// <summary>
         /// Injection contructor with Log instance
         /// </summary>
         /// <param name="logInstance"></param>
-        public LogsController(ILogger<LogsController> logInstance)
+        /// <param name="_settings"></param>
+        public LogsController(ILogger<LogsController> logInstance, IOptions<ApplicationSettings> _settings)
         {
             logger = logInstance;
+            configSettings = _settings;
         }
 
         /// <summary>
@@ -41,7 +42,11 @@ namespace PM.Api.Controllers
                                      $"{logInfo.AppName}\t|\tModule:{logInfo.Module}\t|\tMethod:{logInfo.Method}\nMessage:{logInfo.Message}\n" +
                                      ((!string.IsNullOrEmpty(logInfo.ErrorDetails)) ? $"\nError details:{logInfo.ErrorDetails}": string.Empty) + Environment.NewLine +
                                      $"----------------------------------------------------------------------------------------\n";
-            logger.Log(logInfo.LogType, message: completeLogInfo);
+
+            if (!string.IsNullOrEmpty(logInfo.ErrorDetails))
+                logger.LogError(logInfo.ErrorDetails);
+            else
+                logger.Log(logInfo.LogType, message: completeLogInfo);
             return Ok(true);
         }
     }
