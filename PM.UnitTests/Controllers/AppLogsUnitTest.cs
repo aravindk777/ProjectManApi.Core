@@ -21,6 +21,7 @@ namespace PM.UnitTests.Controllers
         public AppLogsUnitTest()
         {
             loggerInstance = new Mock<ILogger<LogsController>>();
+            mockSettings = new Mock<IOptions<ApplicationSettings>>();
             mockController = new LogsController(loggerInstance.Object, mockSettings.Object);
         }
 
