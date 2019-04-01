@@ -143,7 +143,7 @@ namespace PM.Api.Controllers
         /// </summary>
         /// <param name="id">Task ID</param>
         /// <returns>Boolean status of the delete request</returns>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             try

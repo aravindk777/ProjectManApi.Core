@@ -11,33 +11,34 @@
         </member>
         <member name="M:PM.Api.Controllers.HealthController.#ctor(PM.Data.Repos.Users.IUserRepository,Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.HealthController})">
             <summary>
-            
+            Injection constructor
             </summary>
-            <param name="_userRepo"></param>
-            <param name="logInstance"></param>
+            <param name="_userRepo">User repository instance</param>
+            <param name="logInstance">logger instance</param>
         </member>
         <member name="M:PM.Api.Controllers.HealthController.ServiceStatus">
             <summary>
-            
+            Check the Service availability. 
             </summary>
-            <returns></returns>
+            <returns>Would return true if the service is available/reachable to respond</returns>
         </member>
         <member name="M:PM.Api.Controllers.HealthController.DbStatus">
             <summary>
-            
+            Check Db status
             </summary>
-            <returns></returns>
+            <returns>Count of Users Entity object from Database directly</returns>
         </member>
         <member name="T:PM.Api.Controllers.LogsController">
             <summary>
             Logging Controller for Angular UI to be used
             </summary>
         </member>
-        <member name="M:PM.Api.Controllers.LogsController.#ctor(Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.LogsController})">
+        <member name="M:PM.Api.Controllers.LogsController.#ctor(Microsoft.Extensions.Logging.ILogger{PM.Api.Controllers.LogsController},Microsoft.Extensions.Options.IOptions{PM.Models.Config.ApplicationSettings})">
             <summary>
             Injection contructor with Log instance
             </summary>
             <param name="logInstance"></param>
+            <param name="_settings"></param>
         </member>
         <member name="M:PM.Api.Controllers.LogsController.Log(PM.Models.ViewModels.AppLogs)">
             <summary>
@@ -63,14 +64,14 @@
             <summary>
             Get all Projects list
             </summary>
-            <returns></returns>
+            <returns>List of all Project View Model entities</returns>
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Get(System.Int32)">
             <summary>
-            
+            Get a project entity information by the Project Id
             </summary>
-            <param name="id"></param>
-            <returns></returns>
+            <param name="id">Project Id to fetch</param>
+            <returns>Project View Model entity</returns>
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Post(PM.Models.ViewModels.Project)">
             <summary>
@@ -96,10 +97,10 @@
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.Delete(System.Int32)">
             <summary>
-            
+            Delete a project by the Project Id
             </summary>
-            <param name="id"></param>
-            <returns></returns>
+            <param name="id">Project Id to delete</param>
+            <returns>boolean status of the request</returns>
         </member>
         <member name="M:PM.Api.Controllers.ProjectsController.GetAllTasksForProject(System.Int32)">
             <summary>
@@ -219,10 +220,11 @@
         </member>
         <member name="M:PM.Api.Controllers.UsersController.Delete(System.String)">
             <summary>
-            
+            Deletes an user by UserId which would mark the user as inactive
             </summary>
-            <param name="id"></param>
-            <returns></returns>
+            <param name="id">Userid</param>
+            <returns>boolean status of the delete request'
+            </returns>
         </member>
         <member name="M:PM.Api.Controllers.UsersController.Search(System.String,System.Boolean,System.String)">
             <summary>
@@ -295,7 +297,7 @@
             <summary>
             Constructor with DI
             </summary>
-            <param name="configuration">Configuration</param>
+            <param name="_configuration">Configuration</param>
             <param name="environment">Environment</param>
         </member>
         <member name="P:PM.Api.Startup.Configuration">
@@ -317,7 +319,7 @@
             <param name="env">environment configuration</param>
             <param name="loggerFactory">logging</param>
         </member>
-        <member name="M:PM.Api.Startup.SetupLogging">
+        <member name="M:PM.Api.Startup.SetupLogging(PM.Models.Config.ApplicationSettings)">
             <summary>
             Logging configuration
             </summary>
