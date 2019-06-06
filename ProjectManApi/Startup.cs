@@ -148,7 +148,6 @@ namespace PM.Api
         /// <param name="loggerFactory">logging</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
             //loggerFactory.AddNLog(Configuration);
 
             if (env.IsDevelopment())
